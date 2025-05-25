@@ -15,7 +15,7 @@ export default function Navbar() {
           Vizzko
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="/signin">
+          <Link href="/login">
             <button className="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow transition-transform duration-200 hover:bg-blue-700 hover:scale-105 active:scale-95 focus:outline-none">
               Sign In
             </button>
