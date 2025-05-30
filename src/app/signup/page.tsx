@@ -1,30 +1,115 @@
-import React from 'react'
-import '../styles/login.css'
+"use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import "../styles/login.css";
 
-type Props = {}
+const Signup = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const router = useRouter();
 
-const Login = () => {
-    return (
-        <div className='login-main'>
-            <div className='login-container'>
-                <h1 className='login-title'>Signup</h1>
-                <form className='login-form'>
-                    <input type="text" placeholder='Username' className='login-input' />
-                    <input type="password" placeholder='Password' className='login-input' />
-                    <input type="password" placeholder='Confirm Password' className='login-input' />
-                    <div style={{ textAlign: 'right', marginBottom: '1em' }}>
-                        <a href="/forgot-password" style={{ textDecoration: 'none', fontSize: '0.9em' }}>Forgot password?</a>
-                    </div>
-                    <button type="submit" className='login-button'>Login</button>
-                </form>
-                <div className="login-divider">or</div>
-                <button className="login-google-button">
-                    <img src="/Google.png" alt="Google" className="google-logo" />
-                    Login with Google
-                </button>
-            </div>
-        </div>
-    )
-}
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  if (!baseUrl) {
+    throw new Error("NEXT_PUBLIC_BASE_URL is not defined");
+  }
 
-export default Login
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!username || !password || !confirm) {
+      setError("All fields are required");
+      return;
+    }
+    if (password !== confirm) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${baseUrl}/api/auth/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: username, email: username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Signup failed");
+      } else {
+        setSuccess("Signup successful!");
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+        router.push("/"); // Navigate to home page on success
+      }
+    } catch (err: any) {
+      setError("Signup failed");
+    }
+  };
+
+  // Google signup/login handler
+  const handleGoogleLogin = () => {
+    window.location.href = `${baseUrl}/api/auth/google`;
+  };
+
+  return (
+    <div className="login-main">
+      <div className="login-container">
+        <h1 className="login-title">Signup</h1>
+        <form className="login-form" onSubmit={handleSignup}>
+          <input
+            type="text"
+            placeholder="Username or Email"
+            className="login-input"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="login-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            className="login-input"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+          />
+          <div style={{ textAlign: "right", marginBottom: "1em" }}>
+            <a
+              href="/forgot-password"
+              style={{ textDecoration: "none", fontSize: "0.9em" }}
+            >
+              Forgot password?
+            </a>
+          </div>
+          <button type="submit" className="login-button">
+            Signup
+          </button>
+          {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
+          {success && (
+            <div style={{ color: "green", marginTop: 10 }}>{success}</div>
+          )}
+        </form>
+        <div className="login-divider">or</div>
+        <button
+          className="login-google-button"
+          type="button"
+          onClick={handleGoogleLogin}
+        >
+          <img src="/Google.png" alt="Google" className="google-logo" />
+          Login with Google
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Signup;

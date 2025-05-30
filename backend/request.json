@@ -1,0 +1,19 @@
+{
+  "endpoint": "projects/vizzko/locations/us-central1/publishers/google/models/imagen-4.0-generate-preview-05-20",
+  "instances": [
+    {
+      "prompt": "A red and yellow cow"
+    }
+  ],
+  "parameters": {
+    "aspectRatio": "1:1",
+    "sampleCount": 4,
+    "negativePrompt": "",
+    "enhancePrompt": false,
+    "personGeneration": "",
+    "safetySetting": "",
+    "addWatermark": true,
+    "includeRaiReason": true,
+    "language": "auto"
+  }
+}
