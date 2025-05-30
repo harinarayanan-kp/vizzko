@@ -62,20 +62,29 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <div style={{ textAlign: "right", marginBottom: "1em" }}>
-              <a
-                href="/forgot-password"
-                style={{ textDecoration: "none", fontSize: "0.9em" }}
-              >
-                Forgot password?
-              </a>
-            </div>
             <button type="submit" className="login-button">
               Login
             </button>
             {error && (
               <div style={{ color: "red", marginTop: 10 }}>{error}</div>
             )}
+            <div
+              style={{
+                marginTop: 16,
+                textAlign: "center",
+              }}
+            >
+              New user?{" "}
+              <a
+                href="/signup"
+                style={{
+                  color: "#0070f3",
+                  textDecoration: "underline",
+                }}
+              >
+                Sign up
+              </a>
+            </div>
           </form>
           <div className="login-divider">or</div>
           <button

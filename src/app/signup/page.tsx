@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import "../styles/login.css";
+import Navbar from "../components/navbar";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -23,6 +24,10 @@ const Signup = () => {
 
     if (!username || !password || !confirm) {
       setError("All fields are required");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
       return;
     }
     if (password !== confirm) {
@@ -57,56 +62,73 @@ const Signup = () => {
   };
 
   return (
-    <div className="login-main">
-      <div className="login-container">
-        <h1 className="login-title">Signup</h1>
-        <form className="login-form" onSubmit={handleSignup}>
-          <input
-            type="text"
-            placeholder="Username or Email"
-            className="login-input"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="login-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className="login-input"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-          />
-          <div style={{ textAlign: "right", marginBottom: "1em" }}>
-            <a
-              href="/forgot-password"
-              style={{ textDecoration: "none", fontSize: "0.9em" }}
+    <div className="">
+      <Navbar />
+      <div className="login-main">
+        <div className="login-container">
+          <h1 className="login-title">Signup</h1>
+          <form className="login-form" onSubmit={handleSignup}>
+            <input
+              type="text"
+              placeholder="Email"
+              className="login-input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              className="login-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              className="login-input"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+            />
+            <button type="submit" className="login-button">
+              Signup
+            </button>
+            {error && (
+              <div style={{ color: "red", marginTop: 10 }}>{error}</div>
+            )}
+            {success && (
+              <div style={{ color: "green", marginTop: 10 }}>{success}</div>
+            )}
+            <div
+              style={{
+                marginTop: 16,
+                textAlign: "center",
+                color: "#666",
+                fontSize: 14,
+              }}
             >
-              Forgot password?
-            </a>
-          </div>
-          <button type="submit" className="login-button">
-            Signup
+              Already have an account?{" "}
+              <a
+                href="/login"
+                style={{
+                  color: "#0070f3",
+                  textDecoration: "underline",
+                  fontWeight: "bold",
+                }}
+              >
+                Login
+              </a>
+            </div>
+          </form>
+          <div className="login-divider">or</div>
+          <button
+            className="login-google-button"
+            type="button"
+            onClick={handleGoogleLogin}
+          >
+            <img src="/Google.png" alt="Google" className="google-logo" />
+            Login with Google
           </button>
-          {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
-          {success && (
-            <div style={{ color: "green", marginTop: 10 }}>{success}</div>
-          )}
-        </form>
-        <div className="login-divider">or</div>
-        <button
-          className="login-google-button"
-          type="button"
-          onClick={handleGoogleLogin}
-        >
-          <img src="/Google.png" alt="Google" className="google-logo" />
-          Login with Google
-        </button>
+        </div>
       </div>
     </div>
   );

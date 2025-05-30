@@ -1,10 +1,27 @@
 const express = require('express');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { GoogleAuth } = require('google-auth-library');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 require('dotenv').config();
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+// Middleware to authenticate and set req.user
+function auth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ error: 'No token' });
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+// POST /api/generate
+router.post('/', auth, async (req, res) => {
   const prompt = req.body.prompt || 'A red and yellow cow';
   const sampleCount = req.body.sampleCount || 1;
 
@@ -48,6 +65,16 @@ router.post('/', async (req, res) => {
       apiResponse.predictions?.map(
         pred => pred.bytesBase64Encoded || pred.content
       ) || [];
+
+    // Save generated images to user
+    const user = await User.findById(req.user.userId);
+    if (user) {
+      images.forEach(img =>
+        user.generatedImages.push({ image: img })
+      );
+      await user.save();
+    }
+
     res.json({ images, raw: apiResponse });
   } catch (e) {
     res.status(500).json({ error: e.message, images: [] });

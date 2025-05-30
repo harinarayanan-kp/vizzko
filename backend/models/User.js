@@ -5,15 +5,13 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-//   username: { type: String, required: true, unique: true },
-//   profilePicture: { type: String }, // Store the image path or URL
-//   bio: { type: String },
-//   dob: { type: Date },
   createdAt: { type: Date, default: Date.now },
-//   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-//   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-//   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-//   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  generatedImages: [
+    {
+      image: String,
+      createdAt: { type: Date, default: Date.now }
+    }
+  ]
 });
 
 // Hash the password before saving the user

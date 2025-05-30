@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Tshirt3D from "./components/Tshirt3D";
 
 const Test: React.FC = () => {
   const [prompt, setPrompt] = useState("");
@@ -38,19 +39,25 @@ const Test: React.FC = () => {
     setUserEmail(null);
   };
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
   const handleGenerate = async () => {
     setLoading(true);
     setError("");
     setImages([]);
     try {
-      const res = await fetch("http://localhost:5000/api/generate", {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${baseUrl}/api/generate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ prompt, sampleCount: 1 }),
       });
       if (!res.ok) throw new Error("Failed to generate image");
       const data = await res.json();
-      setImages(data.images || []); // expects: { images: [url1, url2, ...] }
+      setImages(data.images || []);
     } catch (err: any) {
       setError(err.message || "Error generating image");
     } finally {
@@ -86,14 +93,20 @@ const Test: React.FC = () => {
         onChange={(e) => setPrompt(e.target.value)}
         placeholder="Enter your prompt"
         style={{ width: "70%", padding: "8px" }}
+        disabled={!userEmail}
       />
       <button
         onClick={handleGenerate}
-        disabled={loading || !prompt}
+        disabled={loading || !prompt || !userEmail}
         style={{ marginLeft: 8 }}
       >
         {loading ? "Generating..." : "Generate"}
       </button>
+      {!userEmail && (
+        <div style={{ color: "orange", marginTop: 10 }}>
+          Please sign in to generate images.
+        </div>
+      )}
       {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
       <div
         style={{
@@ -104,14 +117,30 @@ const Test: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        {images.map((img, idx) => (
-          <img
-            key={idx}
-            src={`data:image/png;base64,${img}`}
-            alt={`Generated ${idx}`}
-            style={{ objectFit: "cover" }}
-          />
-        ))}
+        <Tshirt3D image={images[0] || ""} />
+
+        {images.length > 0 && (
+          <div
+            style={{
+              width: 300,
+              height: 300,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={`data:image/png;base64,${images[0]}`}
+              alt="Generated"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                borderRadius: 8,
+                boxShadow: "0 2px 8px #0002",
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
