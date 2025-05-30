@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vizzko
+
+Vizzko is a full-stack web application for generating and ordering custom t-shirt designs using AI. Built with **Next.js**, **Express**, and **MongoDB**, Vizzko leverages **Google Vertex AI** to turn your creative prompts into unique t-shirt artwork. Users can preview, customize, and place orders—all in one seamless experience.
+
+---
+
+## Features
+
+- ✨ **AI-Powered Design:** Generate t-shirt designs from your own text prompts using Google Vertex AI.
+- 👤 **User Authentication:** Sign up or log in with email/password or Google OAuth.
+- 🖼️ **Live Preview:** Instantly see AI-generated designs before ordering.
+- 🎨 **Customization:** Adjust prompts and regenerate designs as needed.
+- 🛒 **Order Management:** Place and track t-shirt orders.
+- 🔒 **Secure:** JWT-based authentication and secure backend.
+
+---
+
+## Tech Stack
+
+- **Frontend:** [Next.js](https://nextjs.org) (React, TypeScript)
+- **Backend:** [Express.js](https://expressjs.com)
+- **Database:** [MongoDB Atlas](https://www.mongodb.com/atlas)
+- **AI:** [Google Vertex AI](https://cloud.google.com/vertex-ai)
+- **Authentication:** JWT, Google OAuth 2.0
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/vizzko.git
+cd vizzko
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# For both frontend and backend
+npm install
+cd backend
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Set up environment variables
+
+Create a `.env` file in both the root and `/backend` directories. Example for `/backend/.env`:
+
+```
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_APPLICATION_CREDENTIALS=path_to_your_google_service_account.json
+NEXT_PUBLIC_BASE_URL=http://localhost:5000
+```
+
+> **Note:** Never commit your `.env` or service account JSON to version control.
+
+### 4. Run both frontend and backend concurrentlyckend concurrently
+
+The project uses [`concurrently`](https://www.npmjs.com/package/concurrently) to start both servers with a single command.ject uses [`concurrently`](https://www.npmjs.com/package/concurrently) to start both servers with a single command.
+
+```bash
+npm run allrun all
+```
+
+- The **frontend** will run at [http://localhost:3000](http://localhost:3000)- The **frontend** will run at [http://localhost:3000](http://localhost:3000)
+- The **backend** will run at [http://localhost:5000](http://localhost:5000)ocalhost:5000](http://localhost:5000)
+
+---
+
+## Usage
+
+1. **Sign up or log in** (email/password or Google).1. **Sign up or log in** (email/password or Google).
+2. **Enter a prompt** describing your desired t-shirt design.
+3. **Preview the AI-generated design**.3. **Preview the AI-generated design**.
+4. **Customize** or regenerate as needed.**Customize** or regenerate as needed.
+5. **Place your order** and track it in your account.5. **Place your order** and track it in your account.
+
+------
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)org/docs)
+- [Express Documentation](https://expressjs.com/)
+- [MongoDB Documentation](https://www.mongodb.com/docs/)- [MongoDB Documentation](https://www.mongodb.com/docs/)
+- [Google Vertex AI](https://cloud.google.com/vertex-ai/docs)Google Vertex AI](https://cloud.google.com/vertex-ai/docs)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
+This project is for personal and educational use.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+------
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Acknowledgements## Acknowledgements
+
+- [Next.js](https://nextjs.org)- [Next.js](https://nextjs.org)
+- [Express.js](https://expressjs.com)
+- [MongoDB](https://www.mongodb.com)- [MongoDB](https://www.mongodb.com)
+- [Google Vertex AI](https://cloud.google.com/vertex-ai)Google Vertex AI](https://cloud.google.com/vertex-ai)
