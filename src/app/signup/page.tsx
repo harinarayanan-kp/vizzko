@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import "../styles/login.css";
 import Navbar from "../components/navbar";
 
+
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -135,3 +136,4 @@ const Signup = () => {
 };
 
 export default Signup;
+
