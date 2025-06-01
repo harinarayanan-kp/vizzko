@@ -1,6 +1,9 @@
 "use client";
 import React, { useState } from "react";
 
+// Use NEXT_PUBLIC_API_BASE_URL from environment or fallback to localhost
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+
 const AdminPage = () => {
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
@@ -11,7 +14,7 @@ const AdminPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const res = await fetch("/api/admin/login", {
+    const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: adminEmail, password: adminPassword }),
@@ -20,10 +23,17 @@ const AdminPage = () => {
       const data = await res.json();
       setToken(data.token); // Save the token
       setIsLoggedIn(true);
-      // Do NOT fetch orders here
     } else {
       setError("Invalid admin credentials");
     }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setToken(null);
+    setAdminEmail("");
+    setAdminPassword("");
+    setError("");
   };
 
   if (!isLoggedIn) {
@@ -134,6 +144,25 @@ const AdminPage = () => {
     <div style={{ maxWidth: 800, margin: "2rem auto", textAlign: "center" }}>
       <h2>Welcome, Admin!</h2>
       <p>You are now logged in.</p>
+      <button
+        onClick={handleLogout}
+        style={{
+          marginTop: 24,
+          padding: "10px 28px",
+          borderRadius: 8,
+          border: "none",
+          background: "linear-gradient(90deg, #414345 0%, #232526 100%)",
+          color: "#fff",
+          fontWeight: 600,
+          fontSize: 16,
+          cursor: "pointer",
+          boxShadow: "0 2px 8px #23252622",
+          letterSpacing: 1,
+          transition: "background 0.2s",
+        }}
+      >
+        Logout
+      </button>
       {/* You can add more admin actions here */}
     </div>
   );

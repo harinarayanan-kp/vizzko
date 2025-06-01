@@ -6,9 +6,9 @@ import Test from "./Test";
 export default function Home() {
   return (
     <div>
-      <Unda />
-      {/* <NavBar /> */}
-      {/* <Customize /> */}
+      <NavBar />
+      {/* <Unda /> */}
+      <Customize />
       {/* <Test /> */}
     </div>
   );
