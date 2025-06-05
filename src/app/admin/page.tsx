@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ModernAdminDashboard from "./dashboard";
 
 // Use NEXT_PUBLIC_API_BASE_URL from environment or fallback to localhost
@@ -10,7 +10,14 @@ const AdminPage = () => {
   const [adminPassword, setAdminPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState("");
-  const [token, setToken] = useState<string | null>(null);
+
+  // Check for adminToken on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("adminToken");
+      if (token) setIsLoggedIn(true);
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +29,7 @@ const AdminPage = () => {
     });
     if (res.ok) {
       const data = await res.json();
-      setToken(data.token); // Save the token
+      localStorage.setItem("adminToken", data.token); // Store admin token
       setIsLoggedIn(true);
     } else {
       setError("Invalid admin credentials");
@@ -31,7 +38,7 @@ const AdminPage = () => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setToken(null);
+    localStorage.removeItem("adminToken");
     setAdminEmail("");
     setAdminPassword("");
     setError("");
@@ -140,10 +147,8 @@ const AdminPage = () => {
     );
   }
 
-  // After login, but not fetching orders
-  return (
-    <ModernAdminDashboard/>
-  );
+  // After login, render dashboard
+  return <ModernAdminDashboard />;
 };
 
 export default AdminPage;

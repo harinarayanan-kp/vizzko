@@ -1,33 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import {
+  FaUsers,
+  FaChartBar,
+  FaShoppingCart,
+  FaChartLine,
+  FaEnvelope,
+  FaCog,
+  FaTachometerAlt,
+  FaBoxOpen,
+} from "react-icons/fa";
 
-// Use inline SVGs for icons to maximize compatibility
-const UsersIcon = () => (
-  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-);
-const BarChartIcon = () => (
-  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-);
-const ShoppingCartIcon = () => (
-  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-);
-const LineChartIcon = () => (
-  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M9 17l3-3 4 4 5-5"/></svg>
-);
-const MailIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6"/></svg>
-);
-const SettingsIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09c.13.49.51.9 1 1a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.29.31-.42.74-.33 1.18z"/></svg>
-);
-const DashboardIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-);
-const PackageIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4.13a2 2 0 0 0-2 0l-7 4.13A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4.13a2 2 0 0 0 2 0l7-4.13a2 2 0 0 0 1-1.73z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-);
+// Import the new section components
+import Users from "./users";
+import Products from "./products";
+import Orders from "./orders";
+import Analytics from "./analytics";
+import Settings from "./settings";
 
 // Dummy Card and CardContent implementation using Tailwind CSS
 const Card: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = "", children }) => (
@@ -44,38 +35,78 @@ interface Stat {
 }
 
 const stats: Stat[] = [
-  { title: "Total Users", value: "1,200", icon: <UsersIcon /> },
-  { title: "Total Revenue", value: "$34,200", icon: <BarChartIcon /> },
-  { title: "Total Orders", value: "850", icon: <ShoppingCartIcon /> },
-  { title: "Conversion Rate", value: "3.5%", icon: <LineChartIcon /> },
+  { title: "Total Users", value: "1,200", icon: <FaUsers size={22} /> },
+  { title: "Total Revenue", value: "$34,200", icon: <FaChartBar size={22} /> },
+  { title: "Total Orders", value: "850", icon: <FaShoppingCart size={22} /> },
+  { title: "Conversion Rate", value: "3.5%", icon: <FaChartLine size={22} /> },
 ];
 
-const Sidebar: React.FC = () => (
+type Section = "dashboard" | "users" | "products" | "orders" | "analytics" | "messages" | "settings";
+
+const Sidebar: React.FC<{
+  selected: Section;
+  onSelect: (section: Section) => void;
+}> = ({ selected, onSelect }) => (
   <aside className="bg-gradient-to-b from-[#202348] to-[#171930] text-[#e6e9f5] w-64 p-6 min-h-screen flex flex-col justify-between">
     <div>
       <div className="text-2xl font-bold mb-8 tracking-wide">Admin Dashboard</div>
       <nav className="space-y-2">
-        <Link href="#" className="flex items-center gap-3 p-2 rounded-xl bg-[#272b56]">
-          <DashboardIcon /> Dashboard
-        </Link>
-        <Link href="#" className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#23254d] cursor-pointer">
-          <UsersIcon /> Users
-        </Link>
-        <Link href="#" className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#23254d] cursor-pointer">
-          <PackageIcon /> Products
-        </Link>
-        <Link href="#" className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#23254d] cursor-pointer">
-          <ShoppingCartIcon /> Orders
-        </Link>
-        <Link href="#" className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#23254d] cursor-pointer">
-          <LineChartIcon /> Analytics
-        </Link>
-        <Link href="#" className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#23254d] cursor-pointer">
-          <MailIcon /> Messages
-        </Link>
-        <Link href="#" className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#23254d] cursor-pointer">
-          <SettingsIcon /> Settings
-        </Link>
+        <button
+          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
+            selected === "dashboard" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
+          }`}
+          onClick={() => onSelect("dashboard")}
+        >
+          <FaTachometerAlt /> Dashboard
+        </button>
+        <button
+          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
+            selected === "users" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
+          }`}
+          onClick={() => onSelect("users")}
+        >
+          <FaUsers /> Users
+        </button>
+        <button
+          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
+            selected === "products" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
+          }`}
+          onClick={() => onSelect("products")}
+        >
+          <FaBoxOpen /> Products
+        </button>
+        <button
+          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
+            selected === "orders" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
+          }`}
+          onClick={() => onSelect("orders")}
+        >
+          <FaShoppingCart /> Orders
+        </button>
+        <button
+          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
+            selected === "analytics" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
+          }`}
+          onClick={() => onSelect("analytics")}
+        >
+          <FaChartLine /> Analytics
+        </button>
+        <button
+          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
+            selected === "messages" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
+          }`}
+          onClick={() => onSelect("messages")}
+        >
+          <FaEnvelope /> Messages
+        </button>
+        <button
+          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
+            selected === "settings" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
+          }`}
+          onClick={() => onSelect("settings")}
+        >
+          <FaCog /> Settings
+        </button>
       </nav>
     </div>
     <div className="text-xs text-[#b0b2ca]">Admin</div>
@@ -109,7 +140,6 @@ const Dashboard: React.FC = () => (
       <Card className="bg-[#23254d] border-none text-[#e6e9f5] md:col-span-2">
         <CardContent>
           <div className="text-lg font-bold mb-4">Sales Analytics</div>
-          {/* Replace below with actual chart component in real app */}
           <div className="w-full h-40 flex items-center justify-center text-[#b0b2ca] text-xl font-mono">[Analytics Chart]</div>
         </CardContent>
       </Card>
@@ -141,10 +171,44 @@ const Dashboard: React.FC = () => (
 );
 
 const ModernAdminDashboard: React.FC = () => {
+  const [selectedSection, setSelectedSection] = useState<Section>("dashboard");
+
+  let content: React.ReactNode;
+  switch (selectedSection) {
+    case "users":
+      content = <Users />;
+      break;
+    case "products":
+      content = <Products />;
+      break;
+    case "orders":
+      content = <Orders />;
+      break;
+    case "analytics":
+      content = <Analytics />;
+      break;
+    case "dashboard":
+      content = <Dashboard />;
+      break;
+    case "messages":
+      content = (
+        <main className="flex-1 bg-gradient-to-br from-[#181c39] to-[#242b53] min-h-screen p-8 overflow-y-auto">
+          <div className="text-2xl font-bold text-[#e6e9f5] mb-4">Messages</div>
+          <div className="bg-[#23254d] rounded-xl p-6 text-[#e6e9f5]">[Messages Section]</div>
+        </main>
+      );
+      break;
+    case "settings":
+      content = <Settings />;
+      break;
+    default:
+      content = <Dashboard />;
+  }
+
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
-      <Dashboard />
+      <Sidebar selected={selectedSection} onSelect={setSelectedSection} />
+      {content}
     </div>
   );
 };
