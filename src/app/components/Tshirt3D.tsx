@@ -1,55 +1,83 @@
-import React, { useRef } from "react";
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import React, { useRef, useEffect } from "react";
+import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { TextureLoader } from "three";
+import * as THREE from "three";
 
-// Pass a base64 image string or URL as prop
+// Props now include baseColor
 type Props = {
-  image?: string; // base64 string or image URL
+  frontImage?: string; // URL or base64
+  backImage?: string; // URL or base64
+  baseColor?: string; // HEX or CSS color string, e.g. "#ffffff"
 };
 
 // Component to load and display a GLB model from public directory
-const GLBModel: React.FC<Props> = ({ image }) => {
+const GLBModel: React.FC<Props> = ({
+  frontImage,
+  backImage,
+  baseColor = "#ffffff",
+}) => {
   const meshRef = useRef<any>(null);
-  const { scene } = useGLTF("/tshirt.glb") as any;
+  const { scene } = useGLTF("/scene.gltf") as any;
 
-  // Load texture if image is provided
-  const texture = image
-    ? useLoader(TextureLoader, image.startsWith("data:") ? image : `data:image/png;base64,${image}`)
+  // Load textures only if images are provided
+  const frontTexture = frontImage
+    ? useLoader(THREE.TextureLoader, frontImage)
+    : null;
+  const backTexture = backImage
+    ? useLoader(THREE.TextureLoader, backImage)
     : null;
 
-  // Apply texture to the mesh named "T_Shirt_Shirt_0"
-  React.useEffect(() => {
-    scene.traverse((child: any) => {
-      if (child.isMesh && child.name === "T_Shirt_Shirt_0" && texture) {
-        child.material.map = texture;
-        child.material.needsUpdate = true;
+  useEffect(() => {
+    if (!scene) return;
+
+    // Find the main mesh group
+    const tshirtGroup = scene.getObjectByName("t-shirtmain");
+    if (!tshirtGroup) return;
+
+    // Traverse children to find meshes with the correct materials
+    tshirtGroup.traverse((child: any) => {
+      if (child.isMesh && child.material) {
+        // Assign base color to BASE material
+        if (child.material.name === "BASE") {
+          child.material.color = new THREE.Color(baseColor);
+          child.material.needsUpdate = true;
+        }
+        // Assign front texture
+        if (child.material.name === "Material.FRONT" && frontTexture) {
+          child.material.map = frontTexture;
+          child.material.transparent = true;
+          child.material.alphaTest = 0.1; // Optional: helps with hard edges
+          child.material.needsUpdate = true;
+        }
+        // Assign back texture
+        if (child.material.name === "Material.BACK.001" && backTexture) {
+          child.material.map = backTexture;
+          child.material.transparent = true;
+          child.material.alphaTest = 0.1;
+          child.material.needsUpdate = true;
+        }
       }
     });
-  }, [scene, texture]);
+  }, [scene, frontTexture, backTexture, baseColor]);
 
-  
-
-  // Attach ref to the scene's first child if possible
-  React.useEffect(() => {
-    if (
-      scene &&
-      scene.children &&
-      scene.children.length > 0 &&
-      meshRef.current === null
-    ) {
-      meshRef.current = scene.children[0];
-    }
-  }, [scene]);
-
-  return <primitive ref={meshRef} object={scene} scale={0.8} position={[0, 0, 0]} />;
+  return (
+    <primitive
+      ref={meshRef}
+      object={scene}
+      scale={0.2}
+      position={[0, 0.5, 0]}
+    />
+  );
 };
 
-const Tshirt3D: React.FC<Props> = ({ image }) => (
-  <Canvas style={{ height: 600, width: 600, backgroundColor: "#f0f0f0" }}>
+const Tshirt3D: React.FC<Props> = (props) => (
+  <Canvas
+    className="tshirt3d-canvas"
+    style={{ width: "100%", height: "100%", background: "transparent" }}
+    gl={{ alpha: true }}
+  >
     <ambientLight intensity={0.7} color="white" />
-    <directionalLight position={[5, 5, 5]} color="white" />
-    <GLBModel image={image} />
+    <GLBModel {...props} />
     <OrbitControls enablePan={false} enableZoom={false} />
   </Canvas>
 );
@@ -58,4 +86,4 @@ export default Tshirt3D;
 
 // Preload the model for better performance
 // @ts-ignore
-useGLTF.preload && useGLTF.preload("/tshirt.glb");
+useGLTF.preload && useGLTF.preload("/scene.gltf");

@@ -1,9 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import "../styles/login.css";
 import Navbar from "../components/navbar";
-
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -61,6 +60,24 @@ const Signup = () => {
   const handleGoogleLogin = () => {
     window.location.href = `${baseUrl}/api/auth/google`;
   };
+
+  // Store Google token from URL if present
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      if (token) {
+        localStorage.setItem("token", token);
+        // Remove token from URL
+        params.delete("token");
+        const newUrl =
+          window.location.pathname +
+          (params.toString() ? `?${params.toString()}` : "");
+        window.history.replaceState({}, document.title, newUrl);
+        window.location.reload();
+      }
+    }
+  }, []);
 
   return (
     <div className="">
@@ -136,4 +153,3 @@ const Signup = () => {
 };
 
 export default Signup;
-

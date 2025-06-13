@@ -40,15 +40,12 @@ router.get('/google',
 router.get('/google/callback',
   passport.authenticate('google', { session: false, failureRedirect: '/' }),
   (req, res) => {
-    // Generate JWT and send to client
     const token = jwt.sign(
-      { userId: req.user._id, email: req.user.email }, // <--- include email here!
+      { userId: req.user._id, email: req.user.email }, 
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-    // Redirect to frontend home page with token as query param
     res.redirect(`http://localhost:3000/?token=${token}`);
-    // Or: res.json({ token });
   }
 );
 

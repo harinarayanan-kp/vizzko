@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/login.css";
 import Navbar from "../components/navbar";
 
@@ -39,6 +39,25 @@ const Login = () => {
       setError("Login failed");
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Check for token in query params (Google OAuth)
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      if (token) {
+        localStorage.setItem("token", token);
+        // Remove token from URL
+        params.delete("token");
+        const newUrl =
+          window.location.pathname +
+          (params.toString() ? `?${params.toString()}` : "");
+        window.history.replaceState({}, document.title, newUrl);
+        // Optionally reload or redirect to ensure state is updated
+        window.location.reload();
+      }
+    }
+  }, []);
 
   return (
     <div className="">
