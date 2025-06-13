@@ -2,13 +2,12 @@ const express = require("express");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const { GoogleAuth } = require("google-auth-library");
-const jwt = require("jsonwebtoken");
-const fs = require("fs");
-const path = require("path");
 const { Storage } = require("@google-cloud/storage");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const router = express.Router();
 const User = require("../models/User");
+const { getTshirtPromptData } = require("../utils/geminiPrompt");
 
 // Middleware to authenticate and set req.user
 function auth(req, res, next) {
@@ -24,34 +23,43 @@ function auth(req, res, next) {
   }
 }
 
-// Initialize Google Cloud Storage
+// Google Cloud Storage setup
 const storage = new Storage({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
 const bucketName = process.env.GCS_BUCKET_NAME;
 const bucket = storage.bucket(bucketName);
 
-// Helper to upload base64 image to GCS
+/**
+ * Uploads a base64 encoded image to Google Cloud Storage and returns its public URL.
+ * @param {string} base64String - The base64 encoded image string.
+ * @param {string} filename - The desired filename for the image in GCS.
+ * @returns {Promise<string>} A promise that resolves with the public URL of the uploaded image.
+ */
 async function uploadBase64ToGCS(base64String, filename) {
   const base64Data = base64String.replace(/^data:image\/png;base64,/, "");
   const buffer = Buffer.from(base64Data, "base64");
   const file = bucket.file(filename);
   await file.save(buffer, { contentType: "image/png" });
-  // Return only the public URL (do NOT prepend data:image/png;base64,)
   return `https://storage.googleapis.com/${bucketName}/${filename}`;
 }
 
 // POST /api/generate
 router.post("/", auth, async (req, res) => {
-  const prompt = req.body.prompt || "A red and yellow cow";
-  const sampleCount = req.body.sampleCount || 1;
+  const userPrompt = req.body.prompt || "A red and yellow cow";
+  let geminiData;
+  try {
+    geminiData = await getTshirtPromptData(userPrompt);
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ error: "Gemini prompt failed", details: err.message });
+  }
 
-  const requestJson = {
-    instances: [{ prompt }],
-    parameters: {
-      sampleCount,
-    },
-  };
+  const { color, frontImageURL, backImageURL } = geminiData;
+  const prompts = [frontImageURL, backImageURL];
+  const aspectRatios = ["1:1", "4:3"];
+
   let accessToken = "";
   try {
     const auth = new GoogleAuth({
@@ -67,45 +75,69 @@ router.post("/", auth, async (req, res) => {
     return res.status(500).json({ error: "Failed to get access token" });
   }
 
-  try {
-    const response = await fetch(
-      "https://us-central1-aiplatform.googleapis.com/v1/projects/vizzko/locations/us-central1/publishers/google/models/imagen-4.0-generate-preview-05-20:predict",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(requestJson),
-      }
-    );
+  const imageUrls = [];
+  const user = await User.findById(req.user.userId);
+  if (user && !user.generatedImages) user.generatedImages = [];
 
-    const apiResponse = await response.json();
-    const images =
-      apiResponse.predictions?.map(
-        (pred) => pred.bytesBase64Encoded || pred.content
-      ) || [];
-
-    const imageUrls = [];
-    const user = await User.findById(req.user.userId);
-    for (let i = 0; i < images.length; i++) {
-      const filename = `user_${
-        req.user.userId || "anon"
-      }_${Date.now()}_${i}.png`;
-      const url = await uploadBase64ToGCS(images[i], filename);
-      imageUrls.push(url);
-      // Save the image URL to the user's generatedImages list
-      if (user) {
-        if (!user.generatedImages) user.generatedImages = [];
-        user.generatedImages.push({ imageUrl: url });
-      }
+  for (let i = 0; i < prompts.length; i++) {
+    if (!prompts[i]) {
+      imageUrls.push("");
+      continue;
     }
-    if (user) await user.save();
-
-    res.json({ images: imageUrls, raw: apiResponse });
-  } catch (e) {
-    res.status(500).json({ error: e.message, images: [] });
+    const requestJson = {
+      instances: [{ prompt: prompts[i], aspectRatio: aspectRatios[i] }],
+      parameters: { sampleCount: 1 },
+    };
+    try {
+      const response = await fetch(
+        "https://us-central1-aiplatform.googleapis.com/v1/projects/vizzko/locations/us-central1/publishers/google/models/imagen-4.0-generate-preview-05-20:predict",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(requestJson),
+        }
+      );
+      const apiResponse = await response.json();
+      const images =
+        apiResponse.predictions?.map(
+          (pred) => pred.bytesBase64Encoded || pred.content
+        ) || [];
+      let url = "";
+      if (images[0]) {
+        const filename = `user_${
+          req.user.userId || "anon"
+        }_${Date.now()}_${i}.png`;
+        url = await uploadBase64ToGCS(images[0], filename);
+      }
+      imageUrls.push(url);
+    } catch (e) {
+      imageUrls.push("");
+    }
   }
+
+  // Save to user
+  if (user) {
+    user.generatedImages.push({
+      color,
+      frontPrompt: frontImageURL,
+      backPrompt: backImageURL,
+      frontImageUrl: imageUrls[0],
+      backImageUrl: imageUrls[1],
+      createdAt: new Date(),
+    });
+    await user.save();
+  }
+
+  res.json({
+    color,
+    frontPrompt: frontImageURL,
+    backPrompt: backImageURL,
+    frontImageUrl: imageUrls[0],
+    backImageUrl: imageUrls[1],
+  });
 });
 
 module.exports = router;

@@ -13,14 +13,14 @@ export default function PromptLayout() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [images, setImages] = useState<string[]>([]);
+  const [apiResult, setApiResult] = useState<any>(null);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const handleGenerate = async () => {
     setLoading(true);
     setError("");
-    setImages([]);
+    setApiResult(null);
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${baseUrl}/api/generate`, {
@@ -33,7 +33,7 @@ export default function PromptLayout() {
       });
       if (!res.ok) throw new Error("Failed to generate image");
       const data = await res.json();
-      setImages(data.images || []);
+      setApiResult(data);
     } catch (err: any) {
       setError(err.message || "Error generating image");
     } finally {
@@ -49,7 +49,7 @@ export default function PromptLayout() {
         setError("You must be logged in to add to cart.");
         return;
       }
-      const designId = images[0];
+      const designId = apiResult?.frontImageUrl;
 
       const res = await fetch(`${baseUrl}/api/cart/add`, {
         method: "POST",
@@ -81,9 +81,9 @@ export default function PromptLayout() {
         <div className={styles.modelWrapper}>
           <div className={styles.modelCanvasContainer}>
             <Tshirt3D
-              frontImage={"/front_sample.png"}
-              backImage={images[0] || undefined}
-              baseColor="#88E87C"
+              frontImage={apiResult?.frontImageUrl || "/front_sample.png"}
+              backImage={apiResult?.backImageUrl || "/front_sample.png"}
+              baseColor={apiResult?.color || "#88E87C"}
             />
           </div>
         </div>
@@ -109,10 +109,10 @@ export default function PromptLayout() {
             </div>
           </div>
 
-          {images[0] && (
+          {apiResult?.frontImageUrl && (
             <div style={{ margin: "16px 0", textAlign: "center" }}>
               <img
-                src={images[0]}
+                src={apiResult.frontImageUrl}
                 alt="Generated preview"
                 style={{
                   maxWidth: "100%",

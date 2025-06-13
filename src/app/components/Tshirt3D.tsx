@@ -78,7 +78,7 @@ const Tshirt3D: React.FC<Props> = (props) => (
   >
     <ambientLight intensity={0.7} color="white" />
     <GLBModel {...props} />
-    <OrbitControls enablePan={false} enableZoom={false} />
+    <OrbitControls enablePan={false} />
   </Canvas>
 );
 
