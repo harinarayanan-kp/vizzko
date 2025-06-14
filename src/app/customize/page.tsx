@@ -81,9 +81,9 @@ export default function PromptLayout() {
         <div className={styles.modelWrapper}>
           <div className={styles.modelCanvasContainer}>
             <Tshirt3D
-              frontImage={apiResult?.frontImageUrl || "/front_sample.png"}
-              backImage={apiResult?.backImageUrl || "/front_sample.png"}
-              baseColor={apiResult?.color || "#88E87C"}
+              frontImage={apiResult?.frontImageUrl || "/vizzko_front_base.png"}
+              backImage={apiResult?.backImageUrl || "/vizzko_back_base.png"}
+              baseColor={apiResult?.color || "#FFFFFF"}
             />
           </div>
         </div>
@@ -108,24 +108,6 @@ export default function PromptLayout() {
               </button>
             </div>
           </div>
-
-          {apiResult?.frontImageUrl && (
-            <div style={{ margin: "16px 0", textAlign: "center" }}>
-              <img
-                src={apiResult.frontImageUrl}
-                alt="Generated preview"
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: 220,
-                  borderRadius: 12,
-                  boxShadow: "0 2px 8px #0002",
-                  background: "#fff",
-                  margin: "0 auto",
-                  display: "inline-block",
-                }}
-              />
-            </div>
-          )}
 
           {/* Size Selector */}
           <div className={styles.sizeBox}>

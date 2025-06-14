@@ -257,18 +257,25 @@
 
 @media (max-width: 600px) {
   .root {
-    padding: 8px 0;
+    padding: 0;
   }
   .container {
-    padding: 0 2px;
+    padding: 0;
     border-radius: 0;
   }
   .modelWrapper {
-    height: 220px;
+    height: 80vw; /* Make the canvas nearly square and much larger */
+    min-height: 320px;
+    max-width: 100vw;
     border-radius: 10px;
+    margin: 0 auto;
   }
   .modelCanvasContainer {
-    max-width: 100%;
+    max-width: 100vw;
     max-height: 100%;
+    height: 100%;
+    width: 100vw;
+    padding: 0;
+    margin: 0;
   }
 }

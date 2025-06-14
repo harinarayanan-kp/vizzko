@@ -76,9 +76,14 @@ const Tshirt3D: React.FC<Props> = (props) => (
     style={{ width: "100%", height: "100%", background: "transparent" }}
     gl={{ alpha: true }}
   >
-    <ambientLight intensity={0.7} color="white" />
+    <ambientLight intensity={0.9} color="white" />
     <GLBModel {...props} />
-    <OrbitControls enablePan={false} />
+    <OrbitControls
+      enablePan={false}
+      enableZoom={true}
+      minPolarAngle={Math.PI / 2}
+      maxPolarAngle={Math.PI / 2}
+    />
   </Canvas>
 );
 
