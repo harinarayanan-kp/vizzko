@@ -1,0 +1,310 @@
+@import "./colors.css";
+
+/* Glassmorphic My Account Page Styles (using CSS variables) */
+.myaccount-root {
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.myaccount-bg {
+  background: var(--color-bg-gradient);
+  width: 100%;
+  min-height: 100vh;
+  padding: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.myaccount-container {
+  max-width: 500px;
+  width: 100%;
+  align-self: stretch;
+  padding: 28px;
+  background: var(--color-glass-bg);
+  border-radius: 30px;
+  outline: 1px var(--color-glass-outline) solid;
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+}
+
+.myaccount-title {
+  color: var(--color-text-main);
+  font-size: 36px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.myaccount-section {
+  background: var(--color-glass-bg-strong);
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px #0002;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.myaccount-label {
+  color: var(--color-label);
+  font-size: 16px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+}
+
+.myaccount-value {
+  color: var(--color-text-main);
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+}
+
+.myaccount-orders {
+  margin-top: 10px;
+}
+
+.myaccount-order-item {
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.myaccount-order-title {
+  color: var(--color-text-main);
+  font-size: 16px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+}
+
+.myaccount-order-date {
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.myaccount-order-status {
+  font-size: 14px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  margin-left: auto;
+}
+.myaccount-order-status-delivered {
+  color: var(--color-order-delivered);
+}
+.myaccount-order-status-shipped {
+  color: var(--color-order-shipped);
+}
+.myaccount-order-status-processing {
+  color: var(--color-order-processing);
+}
+
+/* Dashboard grid and sidebar/dashboard layout */
+.myaccount-dashboard-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.myaccount-sidebar {
+  min-width: 260px;
+  max-width: 320px;
+  width: 100%;
+  background: var(--color-glass-bg-strong);
+  border-radius: 22px;
+  outline: 1px var(--color-glass-outline) solid;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 8px #0002;
+  padding: 28px 20px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.myaccount-sidebar-title {
+  color: var(--color-label);
+  font-size: 20px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.myaccount-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.myaccount-input {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--color-text-main);
+  background: rgba(149, 191, 239, 0.1);
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  outline: none;
+  margin-bottom: 0;
+  resize: none;
+}
+
+.myaccount-save-btn {
+  align-self: flex-end;
+  padding: 8px 22px;
+  background: var(--color-btn-bg);
+  box-shadow: 0px 2px 6px var(--color-glass-shadow);
+  border-radius: 18px;
+  color: var(--color-btn-text);
+  font-size: 16px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.myaccount-save-btn:hover {
+  background: var(--color-btn-bg-hover);
+}
+
+.myaccount-dashboard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.myaccount-orders-row {
+  margin-bottom: 8px;
+}
+.myaccount-orders-list {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-top: 8px;
+  overflow-x: auto;
+}
+.myaccount-order-card {
+  min-width: 160px;
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 2px 8px #0001;
+}
+.myaccount-order-title {
+  color: var(--color-text-main);
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+}
+.myaccount-order-date {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+}
+.myaccount-order-status {
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.myaccount-images-row {
+  margin-bottom: 8px;
+}
+.myaccount-images-list {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  margin-top: 8px;
+  overflow-x: auto;
+}
+.myaccount-generated-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #eee;
+  border: 1px solid var(--color-glass-outline);
+  box-shadow: 0 2px 8px #0001;
+}
+
+.myaccount-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.myaccount-dashboard-card {
+  background: var(--color-glass-bg-strong);
+  border-radius: 18px;
+  padding: 22px 18px;
+  box-shadow: 0 2px 8px #0002;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 90px;
+}
+
+.myaccount-dashboard-label {
+  color: var(--color-label);
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.myaccount-dashboard-value {
+  color: var(--color-text-main);
+  font-size: 22px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .myaccount-dashboard-layout {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .myaccount-sidebar {
+    max-width: 100vw;
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 700px) {
+  .myaccount-dashboard-main {
+    gap: 14px;
+  }
+  .myaccount-orders-list,
+  .myaccount-images-list {
+    gap: 8px;
+  }
+  .myaccount-generated-img {
+    width: 56px;
+    height: 56px;
+  }
+}

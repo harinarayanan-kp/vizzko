@@ -1,0 +1,28 @@
+:root {
+  --color-bg-gradient: linear-gradient(
+    181deg,
+    #23243a 0%,
+    #23243a 44%,
+    #0e0e13 100%
+  );
+  --color-glass-bg: rgba(30, 32, 50, 0.18);
+  --color-glass-bg-strong: rgba(30, 32, 50, 0.32);
+  --color-glass-outline: #bfc6e0;
+  --color-glass-shadow: #1a2a5c;
+  --color-primary: #4fa3ff;
+  --color-primary-dark: #1e6ed8;
+  --color-accent: #4fa3ff;
+  --color-accent-dark: #0c0243;
+  --color-text-main: #fff;
+  --color-text-secondary: #bfc6e0;
+  --color-label: #4fa3ff;
+  --color-error: #ff4d4f;
+  --color-success: #4be04b;
+  --color-warning: #f7c948;
+  --color-btn-bg: #4fa3ff;
+  --color-btn-bg-hover: #1e6ed8;
+  --color-btn-text: #0c0243;
+  --color-order-processing: #4fa3ff;
+  --color-order-delivered: #4be04b;
+  --color-order-shipped: #f7c948;
+}

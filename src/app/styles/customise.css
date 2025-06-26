@@ -1,0 +1,269 @@
+@import "./colors.css";
+
+/* Glassmorphic Customize Page Styles (using CSS variables) */
+.customize-root {
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.customize-bg {
+  background: var(--color-bg-gradient);
+  width: 100%;
+  height: 100vh;
+  padding: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.customize-modelSection {
+  min-width: 320px;
+  width: 100%;
+  max-width: 500px;
+  height: 520px;
+  background: var(--color-glass-bg);
+  border-radius: 30px;
+  outline: 1px var(--color-glass-outline) solid;
+  backdrop-filter: blur(25px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  position: relative;
+  z-index: 3;
+}
+
+.customize-controlsSection {
+  width: 100%;
+  align-self: stretch;
+  padding: 20px;
+  background: var(--color-glass-bg);
+  border-radius: 30px;
+  outline: 1px var(--color-glass-outline) solid;
+  backdrop-filter: blur(25px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 15px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 3;
+}
+
+.customize-heading {
+  color: var(--color-text-main);
+  font-size: 32px;
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.customize-label {
+  color: var(--color-text-main);
+  font-size: 18px;
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.customize-promptRow {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.customize-promptInputRow {
+  display: flex;
+  gap: 10px;
+}
+
+.customize-textarea {
+  resize: none;
+  min-height: 40px;
+  max-height: 200px;
+  overflow: hidden;
+  flex: 1;
+  border-radius: 30px;
+  border: 1px solid var(--color-text-main);
+  background: rgba(149, 191, 239, 0.1);
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  outline: none;
+  padding: 12px 18px;
+}
+
+.customize-generateBtn {
+  height: 48px;
+  padding: 0 24px;
+  background: var(--color-btn-bg);
+  box-shadow: 0px 4px 8px var(--color-glass-shadow);
+  border-radius: 30px;
+  color: var(--color-btn-text);
+  font-size: 18px;
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  margin-left: 8px;
+  transition: background 0.2s;
+}
+
+.customize-sizeRow,
+.customize-qtyRow {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.customize-sizeBtns {
+  display: flex;
+  gap: 10px;
+}
+
+.customize-sizeBtn {
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: 1px solid var(--color-text-main);
+  background: rgba(149, 191, 239, 0.1);
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.customize-sizeBtn.selected {
+  border: 2px solid var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-accent-dark);
+}
+
+.customize-qtyBtns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customize-qtyBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1px solid var(--color-text-main);
+  background: rgba(149, 191, 239, 0.1);
+  color: var(--color-text-secondary);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.customize-qtyValue {
+  min-width: 32px;
+  text-align: center;
+  color: var(--color-text-main);
+  font-size: 18px;
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+}
+
+.customize-price {
+  color: var(--color-text-main);
+  font-size: 22px;
+  font-weight: 700;
+  margin: 10px 0;
+  font-family: Poppins, sans-serif;
+}
+
+.customize-addToCartBtn {
+  align-self: center;
+  padding: 10px 32px;
+  background: var(--color-btn-bg);
+  box-shadow: 0px 4px 8px var(--color-glass-shadow);
+  border-radius: 30px;
+  color: var(--color-btn-text);
+  font-size: 20px;
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  margin-top: 10px;
+}
+
+.customize-error {
+  color: var(--color-error);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.customize-cursorGlow {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(204, 227, 250, 0.25) 0%,
+    rgba(9, 195, 237, 0.12) 40%,
+    transparent 100%
+  );
+  filter: blur(4px);
+}
+
+@media (max-width: 1100px) {
+  .customize-bg {
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+    padding: 20px 0;
+  }
+  .customize-modelSection {
+    margin-right: 0;
+    margin-bottom: 20px;
+    width: 100%;
+    height: 500px;
+  }
+  .customize-controlsSection {
+    max-width: 95vw;
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .customize-bg {
+    padding: 10px 0;
+    gap: 10px;
+  }
+  .customize-modelSection {
+    min-width: 0;
+    max-width: 100vw;
+    height: 500px;
+    border-radius: 20px;
+  }
+  .customize-controlsSection {
+    border-radius: 20px;
+    padding: 10px;
+    gap: 10px;
+  }
+  .customize-heading {
+    font-size: 22px;
+  }
+  .customize-label {
+    font-size: 14px;
+  }
+  .customize-price {
+    font-size: 16px;
+  }
+}

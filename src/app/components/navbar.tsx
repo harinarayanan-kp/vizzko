@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import "../styles/navbar.css";
 
 export default function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -37,35 +38,60 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md shadow-md w-full z-20 top-0 left-0 transition-all">
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-4">
-        <Link
-          href="/"
-          className="text-[2rem] font-extrabold tracking-wide text-gray-900 hover:text-blue-600 transition-colors duration-300"
-        >
+    <nav className="navbar">
+      <div className="navbar-inner">
+        <Link href="/" className="navbar-logo">
           Vizzko
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="navbar-btns">
           {!loggedIn ? (
             <>
               <Link href="/login">
-                <button className="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow transition-transform duration-200 hover:bg-blue-700 hover:scale-105 active:scale-95 focus:outline-none">
-                  Sign In
-                </button>
+                <button className="navbar-btn">Sign In</button>
               </Link>
               <Link href="/signup">
-                <button className="px-5 py-2 rounded-lg bg-black text-white font-semibold shadow transition-transform duration-200 hover:bg-gray-900 hover:scale-105 active:scale-95 focus:outline-none">
-                  Sign Up
-                </button>
+                <button className="navbar-btn white">Sign Up</button>
               </Link>
             </>
           ) : (
-            <button
-              onClick={handleLogout}
-              className="px-5 py-2 rounded-lg bg-red-600 text-white font-semibold shadow transition-transform duration-200 hover:bg-red-700 hover:scale-105 active:scale-95 focus:outline-none"
-            >
-              Logout
-            </button>
+            <>
+              <Link href="/cart" className="navbar-icon-btn" title="Cart">
+                <svg
+                  className="navbar-icon"
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+              </Link>
+              <Link href="/myaccount" className="navbar-icon-btn" title="Profile">
+                <svg
+                  className="navbar-icon"
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M21 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+                </svg>
+              </Link>
+              <button onClick={handleLogout} className="navbar-btn logout">
+                Logout
+              </button>
+            </>
           )}
         </div>
       </div>

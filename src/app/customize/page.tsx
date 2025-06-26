@@ -1,9 +1,10 @@
 // components/PromptLayout.tsx
 "use client";
 
-import { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Tshirt3D from "../components/Tshirt3D";
-import styles from "./Customize.module.css";
+import Navbar from "../components/navbar";
+import "../styles/customise.css";
 
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
@@ -14,8 +15,44 @@ export default function PromptLayout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [apiResult, setApiResult] = useState<any>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [glowPos, setGlowPos] = useState({ x: 0, y: 0 });
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const promptInputRef = useRef<HTMLTextAreaElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  // Track mouse movement (relative to .bg)
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (bgRef.current) {
+        const rect = bgRef.current.getBoundingClientRect();
+        setMousePos({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        });
+      }
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // Animate glowPos toward mousePos for smooth trailing
+  useEffect(() => {
+    let frame: number;
+    const animate = () => {
+      setGlowPos((prev) => {
+        const lerp = 0.18; // Lower = slower, Higher = snappier
+        return {
+          x: prev.x + (mousePos.x - prev.x) * lerp,
+          y: prev.y + (mousePos.y - prev.y) * lerp,
+        };
+      });
+      frame = requestAnimationFrame(animate);
+    };
+    animate();
+    return () => cancelAnimationFrame(frame);
+  }, [mousePos]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -76,52 +113,74 @@ export default function PromptLayout() {
   };
 
   return (
-    <div className={styles.root}>
-      <div className={styles.container}>
-        <div className={styles.modelWrapper}>
-          <div className={styles.modelCanvasContainer}>
-            <Tshirt3D
-              frontImage={apiResult?.frontImageUrl || "/vizzko_front_base.png"}
-              backImage={apiResult?.backImageUrl || "/vizzko_back_base.png"}
-              baseColor={apiResult?.color || "#FFFFFF"}
-            />
-          </div>
+    <div className="customize-root">
+      <div className="customize-bg" ref={bgRef}>
+        {/* Glow follows cursor */}
+        <div
+          className="customize-cursorGlow"
+          style={{
+            left: mousePos.x - 200,
+            top: mousePos.y - 200,
+          }}
+        />
+        {/* 3D Model Section */}
+        <div className="customize-modelSection">
+          {/* Sample 3D T-shirt model using new tshirt3.glb props */}
+          <Tshirt3D
+            baseColor="#e0e0e0"
+            backfullImage="/front_sample.png"
+            backupperImage="/front_sample.png"
+            frontfullImage="/front_sample.png"
+            leftImage="/front_sample.png"
+            rightImage="/front_sample.png"
+          />
         </div>
-        <div className={styles.controls}>
-          <div className={styles.promptBox}>
-            <div className={styles.promptTitle}>Describe your design</div>
-            <div className={styles.promptInputRow}>
-              <input
-                type="text"
+        {/* Controls Section */}
+        <div className="customize-controlsSection">
+          <div className="customize-heading">Customize your T-shirt</div>
+          <div className="customize-promptRow">
+            <div className="customize-label">Describe your design</div>
+            <div className="customize-promptInputRow">
+              <textarea
+                ref={promptInputRef}
                 placeholder="Prompt Here"
                 value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                className={styles.promptInput}
+                onChange={(e) => {
+                  setPrompt(e.target.value);
+                  if (promptInputRef.current) {
+                    promptInputRef.current.style.height = "auto";
+                    promptInputRef.current.style.height =
+                      promptInputRef.current.scrollHeight + "px";
+                  }
+                }}
                 disabled={loading}
+                rows={1}
+                className="customize-textarea"
               />
               <button
                 onClick={handleGenerate}
                 disabled={!prompt.trim() || loading}
-                className={styles.generateBtn}
+                className="customize-generateBtn"
+                style={{
+                  cursor: loading ? "not-allowed" : "pointer",
+                  opacity: !prompt.trim() || loading ? 0.6 : 1,
+                }}
               >
                 {loading ? "Generating..." : "Generate"}
               </button>
             </div>
           </div>
 
-          {/* Size Selector */}
-          <div className={styles.sizeBox}>
-            <div className={styles.sizeTitle}>Choose your size</div>
-            <div className={styles.sizeRow}>
+          <div className="customize-sizeRow">
+            <div className="customize-label">Choose your size</div>
+            <div className="customize-sizeBtns">
               {SIZES.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={
-                    selectedSize === size
-                      ? `${styles.sizeBtn} ${styles.selected}`
-                      : styles.sizeBtn
-                  }
+                  className={`customize-sizeBtn${
+                    selectedSize === size ? " selected" : ""
+                  }`}
                 >
                   {size}
                 </button>
@@ -129,31 +188,29 @@ export default function PromptLayout() {
             </div>
           </div>
 
-          {/* Quantity and Price */}
-          <div className={styles.qtyBox}>
-            <div className={styles.qtyTitle}>Quantity</div>
-            <div className={styles.qtyRow}>
+          <div className="customize-qtyRow">
+            <div className="customize-label">Quantity</div>
+            <div className="customize-qtyBtns">
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className={styles.qtyBtn}
+                className="customize-qtyBtn"
               >
                 -
               </button>
-              <div className={styles.qtyValue}>{quantity}</div>
+              <div className="customize-qtyValue">{quantity}</div>
               <button
                 onClick={() => setQuantity((q) => q + 1)}
-                className={styles.qtyBtn}
+                className="customize-qtyBtn"
               >
                 +
               </button>
             </div>
-            <div className={styles.price}>₹582.00</div>
-            <button onClick={handleAddToCart} className={styles.addToCartBtn}>
-              Add to Cart
-            </button>
           </div>
-
-          {error && <div className={styles.error}>{error}</div>}
+          <div className="customize-price">₹582.00</div>
+          <button onClick={handleAddToCart} className="customize-addToCartBtn">
+            Add to Cart
+          </button>
+          {error && <div className="customize-error">{error}</div>}
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import "../styles/login.css";
 import Navbar from "../components/navbar";
+import "../styles/signup.css";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -80,72 +80,57 @@ const Signup = () => {
   }, []);
 
   return (
-    <div className="">
+    <div className="signup-root">
       <Navbar />
-      <div className="login-main">
-        <div className="login-container">
-          <h1 className="login-title">Signup</h1>
-          <form className="login-form" onSubmit={handleSignup}>
+      <div className="signup-bg">
+        <div className="signup-container">
+          <div className="signup-title">Create Account</div>
+          <form className="signup-form" onSubmit={handleSignup}>
             <input
-              type="text"
-              placeholder="Email"
-              className="login-input"
+              type="email"
+              placeholder="Email address"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              className="signup-input"
             />
             <input
               type="password"
               placeholder="Password"
-              className="login-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="signup-input"
             />
             <input
               type="password"
               placeholder="Confirm Password"
-              className="login-input"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
+              className="signup-input"
             />
-            <button type="submit" className="login-button">
+            <button type="submit" className="signup-btn">
               Signup
             </button>
-            {error && (
-              <div style={{ color: "red", marginTop: 10 }}>{error}</div>
-            )}
-            {success && (
-              <div style={{ color: "green", marginTop: 10 }}>{success}</div>
-            )}
-            <div
-              style={{
-                marginTop: 16,
-                textAlign: "center",
-                color: "#666",
-                fontSize: 14,
-              }}
-            >
-              Already have an account?{" "}
-              <a
-                href="/login"
-                style={{
-                  color: "#0070f3",
-                  textDecoration: "underline",
-                  fontWeight: "bold",
-                }}
-              >
-                Login
-              </a>
-            </div>
+            {error && <div className="signup-error">{error}</div>}
+            {success && <div className="signup-success">{success}</div>}
           </form>
-          <div className="login-divider">or</div>
+          <div className="signup-or">OR</div>
           <button
-            className="login-google-button"
             type="button"
             onClick={handleGoogleLogin}
+            className="signup-google-btn"
           >
-            <img src="/Google.png" alt="Google" className="google-logo" />
-            Login with Google
+            <img src="/Google.png" alt="Google" className="signup-google-img" />
+            Signup with Google
           </button>
+          <div className="signup-divider"></div>
+          <div className="signup-footer">
+            <span className="signup-footer-text">
+              Already have an account?{" "}
+            </span>
+            <a href="/login" className="signup-footer-link">
+              Login
+            </a>
+          </div>
         </div>
       </div>
     </div>
