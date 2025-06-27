@@ -56,9 +56,15 @@ router.post("/", auth, async (req, res) => {
       .json({ error: "Gemini prompt failed", details: err.message });
   }
 
-  const { color, frontImageURL, backImageURL } = geminiData;
-  const prompts = [frontImageURL, backImageURL];
-  const aspectRatios = ["1:1", "4:3"];
+  // Destructure prompts from Gemini response
+  const { color, frontImage, backImage, shoulderImage } = geminiData;
+  // Only include shoulder if requested (shoulderImage is present and not empty)
+  const prompts = [frontImage, backImage];
+  const aspectRatios = ["4:3", "4:3"];
+  if (shoulderImage && shoulderImage.trim() !== "") {
+    prompts.push(shoulderImage);
+    aspectRatios.push("1:1");
+  }
 
   let accessToken = "";
   try {
@@ -122,22 +128,31 @@ router.post("/", auth, async (req, res) => {
   if (user) {
     user.generatedImages.push({
       color,
-      frontPrompt: frontImageURL,
-      backPrompt: backImageURL,
+      frontPrompt: frontImage,
+      backPrompt: backImage,
+      shoulderPrompt: shoulderImage || undefined,
       frontImageUrl: imageUrls[0],
       backImageUrl: imageUrls[1],
+      shoulderImageUrl: imageUrls[2] || undefined,
       createdAt: new Date(),
     });
     await user.save();
   }
 
-  res.json({
+  // Build response object
+  const responseObj = {
     color,
-    frontPrompt: frontImageURL,
-    backPrompt: backImageURL,
+    frontPrompt: frontImage,
+    backPrompt: backImage,
     frontImageUrl: imageUrls[0],
     backImageUrl: imageUrls[1],
-  });
+  };
+  if (shoulderImage && shoulderImage.trim() !== "") {
+    responseObj.shoulderPrompt = shoulderImage;
+    responseObj.shoulderImageUrl = imageUrls[2];
+  }
+
+  res.json(responseObj);
 });
 
 module.exports = router;

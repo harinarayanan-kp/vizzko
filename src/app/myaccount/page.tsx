@@ -1,81 +1,96 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
+import Tshirt3D from "../components/Tshirt3D";
 import "../styles/myaccount.css";
 
-const dummyUser = {
-  name: "Jane Doe",
-  email: "jane.doe@email.com",
-  joined: "2024-11-15",
-};
-
-const dummyOrders = [
-  {
-    id: "ORD-1001",
-    title: "AI Art T-shirt",
-    date: "2025-06-10",
-    status: "Delivered",
-  },
-  {
-    id: "ORD-1002",
-    title: "Minimal Globe Tee",
-    date: "2025-06-18",
-    status: "Shipped",
-  },
-  {
-    id: "ORD-1003",
-    title: "Custom Window Shirt",
-    date: "2025-06-22",
-    status: "Processing",
-  },
-];
-
 export default function MyAccountPage() {
-  // Dummy generated images
-  const generatedImages = [
-    "/front_sample.png",
-    "/tshirt2.glb",
-    "/scene.gltf",
-    "/vizzko_front_base.png",
-    "/vizzko_back_base.png",
-  ];
+  const [user, setUser] = useState<any | null>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [generatedImages, setGeneratedImages] = useState<any[]>([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupDesign, setPopupDesign] = useState<any | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        // Fetch user info
+        const userRes = await fetch(`${baseUrl}/api/user`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          setUser(userData);
+        }
+        // Fetch orders
+        const ordersRes = await fetch(`${baseUrl}/api/orders`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (ordersRes.ok) {
+          let ordersData = await ordersRes.json();
+          if (!Array.isArray(ordersData)) {
+            // If the response is an object, try to extract an array
+            if (ordersData.orders && Array.isArray(ordersData.orders)) {
+              ordersData = ordersData.orders;
+            } else {
+              ordersData = [];
+            }
+          }
+          setOrders(ordersData);
+        }
+        // Fetch generated designs
+        const designsRes = await fetch(`${baseUrl}/api/designs`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (designsRes.ok) {
+          const designsData = await designsRes.json();
+          setGeneratedImages(designsData);
+        }
+      } catch {}
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="myaccount-root">
       <Navbar />
-      <div className="myaccount-bg myaccount-dashboard-layout">
-        {/* Sidebar: Edit user details */}
-        <div className="myaccount-sidebar">
-          <div className="myaccount-sidebar-title">Edit Profile</div>
-          <form className="myaccount-edit-form">
-            <label className="myaccount-label">Name</label>
-            <input className="myaccount-input" defaultValue={dummyUser.name} />
-            <label className="myaccount-label">Email</label>
-            <input className="myaccount-input" defaultValue={dummyUser.email} />
-            <label className="myaccount-label">Shipping Address</label>
-            <textarea
-              className="myaccount-input"
-              defaultValue="123 Main St, City, Country"
-              rows={2}
-            />
-            <button className="myaccount-save-btn" type="button">
-              Save Changes
-            </button>
-          </form>
-        </div>
-        {/* Main content */}
-        <div className="myaccount-dashboard-main">
+      <div className="myaccount-bg">
+        <div
+          className="myaccount-dashboard-main"
+          style={{
+            width: "100%",
+            maxWidth: 600,
+            margin: "0 auto",
+          }}
+        >
           <div className="myaccount-title">Account Dashboard</div>
+          {/* User Info */}
+          <div className="myaccount-section" style={{ marginBottom: 24 }}>
+            <div className="myaccount-label">Name</div>
+            <div className="myaccount-value">{user?.name || "-"}</div>
+            <div className="myaccount-label" style={{ marginTop: 12 }}>
+              Email
+            </div>
+            <div className="myaccount-value">{user?.email || "-"}</div>
+          </div>
           {/* Recent Orders Row */}
           <div className="myaccount-orders-row">
             <div className="myaccount-label">Recent Orders</div>
             <div className="myaccount-orders-list">
-              {dummyOrders.map((order) => (
+              {orders.length === 0 && (
+                <div style={{ color: "#888", fontSize: 14 }}>
+                  No orders yet.
+                </div>
+              )}
+              {orders.map((order) => (
                 <div className="myaccount-order-card" key={order.id}>
                   <div className="myaccount-order-title">{order.title}</div>
                   <div className="myaccount-order-date">{order.date}</div>
                   <div
-                    className={`myaccount-order-status myaccount-order-status-${order.status.toLowerCase()}`}
+                    className={`myaccount-order-status myaccount-order-status-${order.status?.toLowerCase?.()}`}
                   >
                     {order.status}
                   </div>
@@ -87,42 +102,57 @@ export default function MyAccountPage() {
           <div className="myaccount-images-row">
             <div className="myaccount-label">Your Generated Designs</div>
             <div className="myaccount-images-list">
-              {generatedImages.map((img, i) => (
+              {generatedImages.length === 0 && (
+                <div style={{ color: "#888", fontSize: 14 }}>
+                  No generated designs yet.
+                </div>
+              )}
+              {generatedImages.map((design: any, i) => (
                 <img
                   className="myaccount-generated-img"
-                  src={img}
+                  src={design.frontImageUrl}
                   alt="Generated"
                   key={i}
+                  onClick={() => {
+                    setPopupDesign(design);
+                    setShowPopup(true);
+                  }}
+                  style={{ cursor: "pointer" }}
                   onError={(e) => (e.currentTarget.style.opacity = "0.3")}
                 />
               ))}
             </div>
           </div>
-          {/* Dashboard grid */}
-          <div className="myaccount-dashboard-grid">
-            <div className="myaccount-dashboard-card">
-              <div className="myaccount-dashboard-label">Orders</div>
-              <div className="myaccount-dashboard-value">
-                {dummyOrders.length}
-              </div>
-            </div>
-            <div className="myaccount-dashboard-card">
-              <div className="myaccount-dashboard-label">Member Since</div>
-              <div className="myaccount-dashboard-value">
-                {dummyUser.joined}
-              </div>
-            </div>
-            <div className="myaccount-dashboard-card">
-              <div className="myaccount-dashboard-label">Email</div>
-              <div className="myaccount-dashboard-value">{dummyUser.email}</div>
-            </div>
-            <div className="myaccount-dashboard-card">
-              <div className="myaccount-dashboard-label">Name</div>
-              <div className="myaccount-dashboard-value">{dummyUser.name}</div>
-            </div>
-          </div>
         </div>
       </div>
+      {showPopup && popupDesign && (
+        <div
+          className="myaccount-popup-overlay"
+          onClick={() => setShowPopup(false)}
+        >
+          <div
+            className="myaccount-popup-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="myaccount-popup-3dview">
+              <Tshirt3D
+                baseColor={popupDesign.baseColor || "#fff"}
+                frontfullImage={popupDesign.frontImageUrl}
+                backfullImage={popupDesign.backImageUrl}
+                leftImage={popupDesign.shoulderImageUrl}
+                rightImage={popupDesign.shoulderImageUrl}
+                backupperImage={undefined}
+              />
+            </div>
+            <button
+              className="myaccount-popup-close"
+              onClick={() => setShowPopup(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

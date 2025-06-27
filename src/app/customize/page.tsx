@@ -22,6 +22,15 @@ export default function PromptLayout() {
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
 
+  // Price by size
+  const SIZE_PRICES: Record<string, number> = {
+    S: 499,
+    M: 589,
+    L: 659,
+    XL: 699,
+    XXL: 699,
+  };
+
   // Track mouse movement (relative to .bg)
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -54,6 +63,23 @@ export default function PromptLayout() {
     return () => cancelAnimationFrame(frame);
   }, [mousePos]);
 
+  // On mount, load last apiResult from localStorage if available
+  useEffect(() => {
+    const saved = localStorage.getItem("lastApiResult");
+    if (saved) {
+      try {
+        setApiResult(JSON.parse(saved));
+      } catch {}
+    }
+  }, []);
+
+  // Save apiResult to localStorage whenever it changes and is not null
+  useEffect(() => {
+    if (apiResult) {
+      localStorage.setItem("lastApiResult", JSON.stringify(apiResult));
+    }
+  }, [apiResult]);
+
   const handleGenerate = async () => {
     setLoading(true);
     setError("");
@@ -71,6 +97,28 @@ export default function PromptLayout() {
       if (!res.ok) throw new Error("Failed to generate image");
       const data = await res.json();
       setApiResult(data);
+      // Save design to DB
+      if (token && data?.frontImageUrl) {
+        const designId =
+          data.frontImageUrl.split("/").pop().split(".")[0] + Date.now();
+        await fetch(`${baseUrl}/api/designs/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            designId,
+            frontImageUrl: data.frontImageUrl,
+            backImageUrl: data.backImageUrl,
+            shoulderImageUrl: data.shoulderImageUrl,
+            baseColor: data.color,
+            prompt,
+          }),
+        });
+        // Attach designId to apiResult for cart
+        setApiResult((prev: any) => ({ ...prev, designId }));
+      }
     } catch (err: any) {
       setError(err.message || "Error generating image");
     } finally {
@@ -86,8 +134,12 @@ export default function PromptLayout() {
         setError("You must be logged in to add to cart.");
         return;
       }
-      const designId = apiResult?.frontImageUrl;
-
+      const designId = apiResult?.designId;
+      if (!designId) {
+        setError("No design to add to cart.");
+        return;
+      }
+      const price = SIZE_PRICES[selectedSize] || 500;
       const res = await fetch(`${baseUrl}/api/cart/add`, {
         method: "POST",
         headers: {
@@ -99,7 +151,8 @@ export default function PromptLayout() {
           designId,
           quantity,
           size: selectedSize,
-          color: "white",
+          color: apiResult?.color || "white",
+          price,
         }),
       });
       if (!res.ok) {
@@ -115,24 +168,29 @@ export default function PromptLayout() {
   return (
     <div className="customize-root">
       <div className="customize-bg" ref={bgRef}>
-        {/* Glow follows cursor */}
-        <div
-          className="customize-cursorGlow"
-          style={{
-            left: mousePos.x - 200,
-            top: mousePos.y - 200,
-          }}
-        />
         {/* 3D Model Section */}
-        <div className="customize-modelSection">
-          {/* Sample 3D T-shirt model using new tshirt3.glb props */}
+        <div
+          className="customize-modelSection"
+          style={{ position: "relative", overflow: "hidden" }}
+        >
+          {/* 3D T-shirt model using API result if available */}
           <Tshirt3D
-            baseColor="#4f4f4f"
-            backfullImage="/front_sample.png"
-            backupperImage="/front_sample.png"
-            frontfullImage="/front_sample.png"
-            leftImage="/front_sample.png"
-            rightImage="/front_sample.png"
+            baseColor={apiResult?.color || "#4f4f4f"}
+            frontfullImage={apiResult?.frontImageUrl || "/front_sample.png"}
+            backfullImage={apiResult?.backImageUrl || "/front_sample.png"}
+            leftImage={apiResult?.shoulderImageUrl || ""}
+            rightImage={apiResult?.shoulderImageUrl || ""}
+            backupperImage={undefined}
+          />
+          {/* Glow follows cursor, but only inside model section */}
+          <div
+            className="customize-cursorGlow"
+            style={{
+              left: mousePos.x - 200,
+              top: mousePos.y - 200,
+              pointerEvents: "none",
+              position: "absolute",
+            }}
           />
         </div>
         {/* Controls Section */}
@@ -206,7 +264,7 @@ export default function PromptLayout() {
               </button>
             </div>
           </div>
-          <div className="customize-price">₹582.00</div>
+          <div className="customize-price">₹{SIZE_PRICES[selectedSize]}</div>
           <button onClick={handleAddToCart} className="customize-addToCartBtn">
             Add to Cart
           </button>

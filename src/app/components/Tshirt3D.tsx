@@ -56,36 +56,42 @@ const GLBModel: React.FC<Props> = ({
             child.material.color = new THREE.Color(baseColor);
             child.material.map = null;
             child.material.transparent = false;
+            child.material.opacity = 1;
             child.material.needsUpdate = true;
             break;
           case "backfull":
             child.material.map = backfullTexture;
             child.material.transparent = true;
             child.material.alphaTest = 0.01;
+            child.material.opacity = backfullTexture ? 1 : 0;
             child.material.needsUpdate = true;
             break;
           case "backupper":
             child.material.map = backupperTexture;
             child.material.transparent = true;
             child.material.alphaTest = 0.01;
+            child.material.opacity = backupperTexture ? 1 : 0;
             child.material.needsUpdate = true;
             break;
           case "frontfull":
             child.material.map = frontfullTexture;
             child.material.transparent = true;
             child.material.alphaTest = 0.01;
+            child.material.opacity = frontfullTexture ? 1 : 0;
             child.material.needsUpdate = true;
             break;
           case "left":
             child.material.map = leftTexture;
             child.material.transparent = true;
             child.material.alphaTest = 0.01;
+            child.material.opacity = leftTexture ? 1 : 0;
             child.material.needsUpdate = true;
             break;
           case "right":
             child.material.map = rightTexture;
             child.material.transparent = true;
             child.material.alphaTest = 0.01;
+            child.material.opacity = rightTexture ? 1 : 0;
             child.material.needsUpdate = true;
             break;
           default:

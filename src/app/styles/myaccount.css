@@ -285,6 +285,81 @@
   font-weight: 700;
 }
 
+/* --- My Account Popup Modal Styles --- */
+.myaccount-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30, 32, 38, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.myaccount-popup-content {
+  background: var(--color-glass-bg);
+  border-radius: 18px;
+  padding: 32px 24px 24px 24px;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.18);
+  max-width: 440px;
+  width: 96vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  animation: popup-fadein 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: 1px var(--color-glass-outline) solid;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes popup-fadein {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.myaccount-popup-3dview {
+  width: 320px;
+  height: 400px;
+  max-width: 90vw;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #f7f7fa 70%, #e3e3f7 100%);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.myaccount-popup-close {
+  margin-top: 10px;
+  padding: 8px 28px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(90deg, #f44336 60%, #e57373 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.08);
+}
+.myaccount-popup-close:hover {
+  background: linear-gradient(90deg, #e53935 60%, #ef9a9a 100%);
+  box-shadow: 0 4px 16px rgba(244, 67, 54, 0.13);
+}
+
 @media (max-width: 1100px) {
   .myaccount-dashboard-layout {
     flex-direction: column;
@@ -306,5 +381,15 @@
   .myaccount-generated-img {
     width: 56px;
     height: 56px;
+  }
+  .myaccount-popup-3dview {
+    width: 96vw;
+    height: 56vw;
+    min-height: 220px;
+    max-height: 60vh;
+  }
+  .myaccount-popup-content {
+    padding: 18px 4vw 14px 4vw;
+    max-width: 99vw;
   }
 }

@@ -16,6 +16,8 @@ const googleAuthRoutes = require("./routes/googleAuth"); // Google OAuth
 const cartRoutes = require("./routes/cartRoutes"); // Cart management
 const adminRoutes = require("./routes/adminRoutes"); // Admin routes
 const ordersRoutes = require("./routes/orderRoutes"); // Orders management
+const designRoutes = require("./routes/designRoutes"); // Design management
+const userRoutes = require("./routes/userRoutes"); // User profile route
 
 // Load environment variables from .env file
 dotenv.config();
@@ -77,6 +79,12 @@ app.use("/api/admin", adminRoutes);
 
 // User orders route
 app.use("/api/orders", ordersRoutes);
+
+// Design management
+app.use("/api/designs", designRoutes);
+
+// User profile route
+app.use("/api/user", userRoutes);
 
 // =======================
 // Start the Server

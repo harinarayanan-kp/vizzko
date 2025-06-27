@@ -1,38 +1,90 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import "../styles/cart.css";
 
-const dummyCartItems = [
-  {
-    id: 1,
-    title: "AI Art T-shirt",
-    desc: "Premium cotton, custom AI-generated print.",
-    price: 29.99,
-    qty: 2,
-    img: "/tshirt.glb", // Use a PNG/JPG if available, fallback to a placeholder
-  },
-  {
-    id: 2,
-    title: "Minimal Globe Tee",
-    desc: "Soft touch, globe design, limited edition.",
-    price: 24.5,
-    qty: 1,
-    img: "/globe.svg",
-  },
-  {
-    id: 3,
-    title: "Custom Window Shirt",
-    desc: "Window motif, glassmorphic style.",
-    price: 32.0,
-    qty: 1,
-    img: "/window.svg",
-  },
-];
-
 export default function CartPage() {
-  const total = dummyCartItems.reduce(
-    (sum, item) => sum + item.price * item.qty,
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [designs, setDesigns] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("You must be logged in to view your cart.");
+          setLoading(false);
+          return;
+        }
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const res = await fetch(`${baseUrl}/api/cart`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Failed to fetch cart");
+        const data = await res.json();
+        setCartItems(data.items || []);
+        // Fetch all designs for this user
+        const dres = await fetch(`${baseUrl}/api/designs`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (dres.ok) {
+          const ddata = await dres.json();
+          // Map by designId for quick lookup
+          const dmap: Record<string, any> = {};
+          ddata.forEach((d: any) => {
+            dmap[d.designId as string] = d;
+          });
+          setDesigns(dmap);
+        }
+      } catch (err: any) {
+        setError(err.message || "Error loading cart");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCart();
+  }, []);
+
+  // Remove item from cart
+  const handleRemove = async (item: any) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      const res = await fetch(`${baseUrl}/api/cart/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productId: item.productId,
+          designId: item.designId,
+          size: item.size,
+          color: item.color,
+        }),
+      });
+      if (res.ok) {
+        setCartItems((prev) => prev.filter((i) => i !== item));
+      }
+    } catch {}
+  };
+
+  // Price by size
+  const SIZE_PRICES: Record<string, number> = {
+    S: 499,
+    M: 589,
+    L: 659,
+    XL: 699,
+    XXL: 699,
+  };
+
+  const total = cartItems.reduce(
+    (sum, item) => sum + (SIZE_PRICES[item.size] || 589) * (item.quantity || 1),
     0
   );
 
@@ -42,31 +94,81 @@ export default function CartPage() {
       <div className="cart-bg">
         <div className="cart-container">
           <div className="cart-title">Your Cart</div>
-          <div className="cart-items-list">
-            {dummyCartItems.map((item) => (
-              <div className="cart-item" key={item.id}>
-                <img
-                  className="cart-item-img"
-                  src={item.img}
-                  alt={item.title}
-                  onError={(e) => (e.currentTarget.src = "/image.png")}
-                />
-                <div className="cart-item-info">
-                  <div className="cart-item-title">{item.title}</div>
-                  <div className="cart-item-desc">{item.desc}</div>
-                  <div className="cart-item-price">
-                    ${item.price.toFixed(2)}
-                  </div>
-                </div>
-                <div className="cart-item-qty">x{item.qty}</div>
+          {loading ? (
+            <div>Loading...</div>
+          ) : error ? (
+            <div className="cart-error">{error}</div>
+          ) : (
+            <>
+              <div className="cart-items-list">
+                {cartItems.length === 0 && <div>Your cart is empty.</div>}
+                {cartItems.map((item, idx) => {
+                  const design = designs[item.designId] || {};
+                  console.log("CartItem", item, "Design", design);
+                  return (
+                    <div className="cart-item" key={item._id || idx}>
+                      <img
+                        className="cart-item-img"
+                        src={design.frontImageUrl || "/image.png"}
+                        alt={design.prompt || "T-shirt"}
+                        onError={(e) => (e.currentTarget.src = "/image.png")}
+                      />
+                      <div className="cart-item-info">
+                        <div className="cart-item-title">AI Art T-shirt</div>
+                        <div className="cart-item-desc">
+                          {design.prompt ? (
+                            design.prompt
+                          ) : (
+                            <span style={{ color: "#888" }}>
+                              No prompt available
+                            </span>
+                          )}
+                        </div>
+                        <div className="cart-item-price">
+                          ₹{(SIZE_PRICES[item.size] || 589).toFixed(2)}
+                        </div>
+                      </div>
+                      <div className="cart-item-qty">x{item.quantity || 1}</div>
+                      <button
+                        className="cart-item-remove"
+                        onClick={() => handleRemove(item)}
+                        title="Remove from cart"
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle cx="10" cy="10" r="10" fill="#f44336" />
+                          <rect
+                            x="6"
+                            y="9"
+                            width="8"
+                            height="2"
+                            rx="1"
+                            fill="white"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-          <div className="cart-summary">
-            <span className="cart-total-label">Total</span>
-            <span className="cart-total-value">${total.toFixed(2)}</span>
-          </div>
-          <button className="cart-checkout-btn">Checkout</button>
+              <div className="cart-summary">
+                <span className="cart-total-label">Total</span>
+                <span className="cart-total-value">₹{total.toFixed(2)}</span>
+              </div>
+              <button className="cart-checkout-btn">Checkout</button>
+            </>
+          )}
         </div>
       </div>
     </div>
