@@ -118,7 +118,7 @@ const Login = () => {
             </button>
             {error && <div className="login-error">{error}</div>}
           </form>
-          <div className="login-divider">OR</div>
+          <div className="login-or-text">OR</div>
           <button
             type="button"
             onClick={handleGoogleLogin}
@@ -127,10 +127,7 @@ const Login = () => {
             <img src="/Google.png" alt="Google" className="login-google-logo" />
             Login with Google
           </button>
-          <div
-            className="login-divider"
-            style={{ borderTop: "1px solid white", margin: "16px 0" }}
-          ></div>
+          <div className="login-divider"></div>
           <div className="login-bottom-row">
             <span className="login-bottom-text">Create an account? </span>
             <a href="/signup" className="login-bottom-link">

@@ -127,7 +127,7 @@ export default function PromptLayout() {
         <div className="customize-modelSection">
           {/* Sample 3D T-shirt model using new tshirt3.glb props */}
           <Tshirt3D
-            baseColor="#e0e0e0"
+            baseColor="#4f4f4f"
             backfullImage="/front_sample.png"
             backupperImage="/front_sample.png"
             frontfullImage="/front_sample.png"
