@@ -10,7 +10,7 @@ interface Size {
 }
 
 interface Product {
-  tshirt: string;
+  tshirt: string; // maps to 'name' in backend
   sizes: Size[];
   modelUrl: string;
 }

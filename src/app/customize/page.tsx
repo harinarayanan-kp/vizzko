@@ -6,8 +6,6 @@ import Tshirt3D from "../components/Tshirt3D";
 import Navbar from "../components/navbar";
 import "../styles/customise.css";
 
-const SIZES = ["S", "M", "L", "XL", "XXL"];
-
 export default function PromptLayout() {
   const [prompt, setPrompt] = useState("");
   const [selectedSize, setSelectedSize] = useState("M");
@@ -19,19 +17,15 @@ export default function PromptLayout() {
   const [glowPos, setGlowPos] = useState({ x: 0, y: 0 });
   const [cartAnim, setCartAnim] = useState(false);
   const [showGoToCart, setShowGoToCart] = useState(false);
+  const [productSizes, setProductSizes] = useState<
+    { size: string; price: number }[]
+  >([]);
+  const [productId, setProductId] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-
-  // Price by size
-  const SIZE_PRICES: Record<string, number> = {
-    S: 499,
-    M: 589,
-    L: 659,
-    XL: 699,
-    XXL: 699,
-  };
 
   // Track mouse movement (relative to .bg)
   useEffect(() => {
@@ -81,6 +75,32 @@ export default function PromptLayout() {
       localStorage.setItem("lastApiResult", JSON.stringify(apiResult));
     }
   }, [apiResult]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        // Get product details by name directly
+        const prodRes = await fetch(`${baseUrl}/api/products/tshirt`);
+        if (!prodRes.ok) throw new Error("Product details not found");
+        const prod = await prodRes.json();
+        setProductId(prod._id);
+        setProductSizes(prod.sizes || []);
+        // Set default price for selected size
+        const found = prod.sizes.find((s: any) => s.size === selectedSize);
+        setPrice(found ? found.price : 0);
+      } catch (err) {
+        setError("Could not load product info");
+      }
+    };
+    fetchProduct();
+  }, []);
+
+  useEffect(() => {
+    // Update price when size changes
+    const found = productSizes.find((s) => s.size === selectedSize);
+    setPrice(found ? found.price : 0);
+  }, [selectedSize, productSizes]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -141,7 +161,6 @@ export default function PromptLayout() {
         setError("No design to add to cart.");
         return;
       }
-      const price = SIZE_PRICES[selectedSize] || 500;
       const res = await fetch(`${baseUrl}/api/cart/add`, {
         method: "POST",
         headers: {
@@ -149,7 +168,7 @@ export default function PromptLayout() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          productId: "tshirt",
+          productId: productId || "tshirt",
           designId,
           quantity,
           size: selectedSize,
@@ -235,15 +254,15 @@ export default function PromptLayout() {
           <div className="customize-sizeRow">
             <div className="customize-label">Choose your size</div>
             <div className="customize-sizeBtns">
-              {SIZES.map((size) => (
+              {productSizes.map((s) => (
                 <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
+                  key={s.size}
+                  onClick={() => setSelectedSize(s.size)}
                   className={`customize-sizeBtn${
-                    selectedSize === size ? " selected" : ""
+                    selectedSize === s.size ? " selected" : ""
                   }`}
                 >
-                  {size}
+                  {s.size}
                 </button>
               ))}
             </div>
@@ -267,7 +286,7 @@ export default function PromptLayout() {
               </button>
             </div>
           </div>
-          <div className="customize-price">₹{SIZE_PRICES[selectedSize]}</div>
+          <div className="customize-price">₹{price}</div>
           <button
             onClick={handleAddToCart}
             className="customize-addToCartBtn"

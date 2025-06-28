@@ -85,10 +85,19 @@ export default function MyAccountPage() {
                   No orders yet.
                 </div>
               )}
-              {orders.map((order) => (
-                <div className="myaccount-order-card" key={order.id}>
-                  <div className="myaccount-order-title">{order.title}</div>
-                  <div className="myaccount-order-date">{order.date}</div>
+              {orders.map((order, idx) => (
+                <div
+                  className="myaccount-order-card"
+                  key={order._id || order.id || idx}
+                >
+                  <div className="myaccount-order-title">
+                    Order #{order._id || order.id || idx}
+                  </div>
+                  <div className="myaccount-order-date">
+                    {order.createdAt
+                      ? new Date(order.createdAt).toLocaleString()
+                      : "-"}
+                  </div>
                   <div
                     className={`myaccount-order-status myaccount-order-status-${order.status?.toLowerCase?.()}`}
                   >

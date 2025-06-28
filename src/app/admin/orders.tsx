@@ -16,7 +16,6 @@ interface Order {
   user?: { email?: string; name?: string };
   items: OrderItem[];
   total?: number;
-  status?: string;
   paymentStatus?: string;
   deliveryStatus?: string;
   name?: string;
@@ -112,7 +111,7 @@ const Orders = () => {
                       }}
                     >
                       {order.user?.email || "N/A"} | {order.name || "-"} |{" "}
-                      {order.status || "-"} | {order.paymentStatus || "-"} |{" "}
+                      {order.paymentStatus || "-"} |{" "}
                       {order.deliveryStatus || "-"}
                     </span>
                   </div>
@@ -153,9 +152,6 @@ const Orders = () => {
                       </div>
                       <div>
                         <b>Billing:</b> {order.billing || "-"}
-                      </div>
-                      <div>
-                        <b>Status:</b> {order.status || "-"}
                       </div>
                       <div>
                         <b>Payment Status:</b> {order.paymentStatus || "-"}

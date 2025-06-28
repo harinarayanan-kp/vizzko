@@ -21,7 +21,13 @@ function adminAuth(req, res, next) {
 // GET /api/admin/orders - View all orders, with optional search/filter
 router.get("/orders", adminAuth, async (req, res) => {
   try {
-    const { user, status, limit = 50, skip = 0 } = req.query;
+    const {
+      user,
+      paymentStatus,
+      deliveryStatus,
+      limit = 50,
+      skip = 0,
+    } = req.query;
     const query = {};
     if (user) {
       // user can be userId or email
@@ -31,7 +37,8 @@ router.get("/orders", adminAuth, async (req, res) => {
       if (userDoc) query.user = userDoc._id;
       else return res.json({ orders: [], total: 0 });
     }
-    if (status) query.status = status;
+    if (paymentStatus) query.paymentStatus = paymentStatus;
+    if (deliveryStatus) query.deliveryStatus = deliveryStatus;
     const orders = await Order.find(query)
       .populate("user", "_id name email")
       .limit(Number(limit))
@@ -58,12 +65,11 @@ router.get("/orders/:id", adminAuth, async (req, res) => {
   }
 });
 
-// PATCH /api/admin/orders/:id - Update order status, paymentStatus, or deliveryStatus
+// PATCH /api/admin/orders/:id - Update order paymentStatus or deliveryStatus
 router.patch("/orders/:id", adminAuth, async (req, res) => {
   try {
-    const { status, paymentStatus, deliveryStatus } = req.body;
+    const { paymentStatus, deliveryStatus } = req.body;
     const update = {};
-    if (status) update.status = status;
     if (paymentStatus) update.paymentStatus = paymentStatus;
     if (deliveryStatus) update.deliveryStatus = deliveryStatus;
     if (Object.keys(update).length === 0) {

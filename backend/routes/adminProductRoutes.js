@@ -21,7 +21,13 @@ function adminAuth(req, res, next) {
 router.get("/products", adminAuth, async (req, res) => {
   try {
     const products = await Product.find();
-    res.json({ products });
+    // Map to use 'tshirt' key for frontend compatibility
+    const mapped = products.map((p) => ({
+      tshirt: p.name,
+      sizes: p.sizes,
+      modelUrl: p.modelUrl,
+    }));
+    res.json({ products: mapped });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -31,7 +37,7 @@ router.get("/products", adminAuth, async (req, res) => {
 router.put("/products/prices", adminAuth, async (req, res) => {
   try {
     const { tshirt, size, price } = req.body;
-    const product = await Product.findOne({ tshirt });
+    const product = await Product.findOne({ name: tshirt });
     if (!product) return res.status(404).json({ error: "Product not found" });
     let updated = false;
     product.sizes = product.sizes.map((s) => {
@@ -57,10 +63,10 @@ router.post("/products", adminAuth, async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
     // Check for duplicate product name
-    if (await Product.findOne({ tshirt })) {
+    if (await Product.findOne({ name: tshirt })) {
       return res.status(409).json({ error: "Product already exists" });
     }
-    const product = new Product({ tshirt, sizes, modelUrl });
+    const product = new Product({ name: tshirt, sizes, modelUrl });
     await product.save();
     res.json({ success: true, product });
   } catch (err) {
@@ -72,7 +78,7 @@ router.post("/products", adminAuth, async (req, res) => {
 router.delete("/products/:tshirt", adminAuth, async (req, res) => {
   try {
     const { tshirt } = req.params;
-    const deleted = await Product.findOneAndDelete({ tshirt });
+    const deleted = await Product.findOneAndDelete({ name: tshirt });
     if (!deleted) return res.status(404).json({ error: "Product not found" });
     res.json({ success: true });
   } catch (err) {
@@ -85,9 +91,9 @@ router.put("/products/:tshirt", adminAuth, async (req, res) => {
   try {
     const { tshirt } = req.params;
     const { newTshirt, sizes, modelUrl } = req.body;
-    const product = await Product.findOne({ tshirt });
+    const product = await Product.findOne({ name: tshirt });
     if (!product) return res.status(404).json({ error: "Product not found" });
-    product.tshirt = newTshirt || product.tshirt;
+    product.name = newTshirt || product.name;
     product.sizes = sizes || product.sizes;
     product.modelUrl = modelUrl || product.modelUrl;
     await product.save();

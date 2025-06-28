@@ -7,3 +7,4 @@
 2025-06-28T19:44:32.954Z | admin | DELETE /api/admin/products/New%20Style%202
 2025-06-28T19:53:00.944Z | admin | POST /api/admin/products
 2025-06-28T19:53:32.815Z | admin | DELETE /api/admin/products/New%20Style
+2025-06-28T20:53:48.637Z | admin | POST /api/admin/products/id-from-name/tshirt
