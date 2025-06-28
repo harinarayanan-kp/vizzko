@@ -8,6 +8,9 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [designs, setDesigns] = useState<Record<string, any>>({});
+  const [productPrices, setProductPrices] = useState<Record<string, number>>(
+    {}
+  );
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -33,13 +36,24 @@ export default function CartPage() {
         });
         if (dres.ok) {
           const ddata = await dres.json();
-          // Map by designId for quick lookup
           const dmap: Record<string, any> = {};
           ddata.forEach((d: any) => {
             dmap[d.designId as string] = d;
           });
           setDesigns(dmap);
         }
+        // Fetch prices for all cart items
+        const priceMap: Record<string, number> = {};
+        for (const item of data.items || []) {
+          const priceRes = await fetch(
+            `${baseUrl}/api/products/price/${item.productId}/${item.size}`
+          );
+          if (priceRes.ok) {
+            const { price } = await priceRes.json();
+            priceMap[`${item.productId}_${item.size}`] = price;
+          }
+        }
+        setProductPrices(priceMap);
       } catch (err: any) {
         setError(err.message || "Error loading cart");
       } finally {
@@ -74,17 +88,12 @@ export default function CartPage() {
     } catch {}
   };
 
-  // Price by size
-  const SIZE_PRICES: Record<string, number> = {
-    S: 499,
-    M: 589,
-    L: 659,
-    XL: 699,
-    XXL: 699,
+  const getItemPrice = (item: any) => {
+    return productPrices[`${item.productId}_${item.size}`] || 0;
   };
 
   const total = cartItems.reduce(
-    (sum, item) => sum + (SIZE_PRICES[item.size] || 589) * (item.quantity || 1),
+    (sum, item) => sum + getItemPrice(item) * (item.quantity || 1),
     0
   );
 
@@ -154,7 +163,7 @@ export default function CartPage() {
                           <b>{item.size}</b>
                         </div>
                         <div className="cart-item-price">
-                          ₹{(SIZE_PRICES[item.size] || 589).toFixed(2)}
+                          ₹{getItemPrice(item).toFixed(2)}
                         </div>
                       </div>
                       <div className="cart-item-qty">x{item.quantity || 1}</div>
@@ -195,7 +204,13 @@ export default function CartPage() {
                 <span className="cart-total-label">Total</span>
                 <span className="cart-total-value">₹{total.toFixed(2)}</span>
               </div>
-              <button className="cart-checkout-btn">Checkout</button>
+              <button
+                className="cart-checkout-btn"
+                onClick={() => (window.location.href = "/cart/checkout")}
+                type="button"
+              >
+                Checkout
+              </button>
             </>
           )}
         </div>

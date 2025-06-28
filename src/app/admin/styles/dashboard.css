@@ -1,14 +1,14 @@
-/* Glassmorphic Admin Dashboard Styles */
+/* Light Theme Admin Dashboard Styles */
 :root {
-  --glass-bg: rgba(35, 37, 77, 0.75);
-  --glass-bg-alt: rgba(24, 28, 57, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
-  --glass-blur: blur(16px);
-  --primary-text: #e6e9f5;
-  --secondary-text: #b0b2ca;
-  --sidebar-bg: linear-gradient(to bottom, #202348, #171930);
-  --main-bg: linear-gradient(135deg, #181c39, #242b53);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-bg-alt: rgba(245, 247, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+  --glass-blur: blur(10px);
+  --primary-text: #23254d;
+  --secondary-text: #5a5d7a;
+  --sidebar-bg: linear-gradient(to bottom, #f5f7fa, #e6e9f5);
+  --main-bg: linear-gradient(135deg, #f5f7fa, #e6e9f5);
 }
 
 /* Admin Dashboard Glassmorphic Styles */
@@ -16,7 +16,7 @@
   min-height: 100vh;
   width: 100vw;
   display: flex;
-  background: linear-gradient(135deg, #181c39 0%, #242b53 100%);
+  background: var(--main-bg);
 }
 .admin-sidebar {
   background: var(--sidebar-bg);
@@ -27,6 +27,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: 2px 0 16px #e6e9f5;
 }
 .admin-sidebar-title {
   font-size: 2rem;
@@ -54,10 +55,11 @@
   transition: background 0.2s;
 }
 .admin-sidebar-btn.selected {
-  background: #272b56;
+  background: #e6e9f5;
+  color: #23254d;
 }
 .admin-sidebar-btn:not(.selected):hover {
-  background: var(--glass-bg);
+  background: var(--glass-bg-alt);
 }
 .admin-sidebar-footer {
   font-size: 0.75rem;
@@ -91,6 +93,7 @@
   color: var(--primary-text);
   outline: none;
   border: none;
+  box-shadow: 0 1px 4px #e6e9f5;
 }
 .admin-search-icon {
   position: absolute;
@@ -109,14 +112,24 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+.admin-stats.admin-stats-equal {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+}
 .admin-card {
   background: var(--glass-bg);
-  border: none;
+  border: 1px solid var(--glass-border);
   color: var(--primary-text);
   border-radius: 1.5rem;
   box-shadow: var(--glass-shadow);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 140px;
+  justify-content: space-between;
 }
 .admin-card-content {
   padding: 1rem;
@@ -142,10 +155,10 @@
   padding: 0.25rem 0;
 }
 .admin-section {
-  background: #23254d;
+  background: #f5f7fa;
   border-radius: 18px;
-  color: #e6e9f5;
-  box-shadow: 0 4px 18px #0002;
+  color: #23254d;
+  box-shadow: 0 4px 18px #e6e9f5;
   padding: 24px 20px;
   margin-bottom: 24px;
 }
@@ -163,9 +176,9 @@
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid #23254d;
+  border-bottom: 1px solid #e6e9f5;
   font-size: 1rem;
-  color: #b0b2ca;
+  color: #5a5d7a;
 }
 .admin-list-item:last-child {
   border-bottom: none;
@@ -197,5 +210,15 @@
 @media (min-width: 768px) {
   .admin-section-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 1100px) {
+  .admin-stats.admin-stats-equal {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .admin-stats.admin-stats-equal {
+    grid-template-columns: 1fr;
   }
 }

@@ -18,7 +18,6 @@ import "./styles/dashboard.css";
 import Users from "./users";
 import Products from "./products";
 import Orders from "./orders";
-import Analytics from "./analytics";
 import Settings from "./settings";
 
 const Sidebar: React.FC<{
@@ -63,22 +62,6 @@ const Sidebar: React.FC<{
         </button>
         <button
           className={`admin-sidebar-btn${
-            selected === "analytics" ? " selected" : ""
-          }`}
-          onClick={() => onSelect("analytics")}
-        >
-          <FaChartLine /> Analytics
-        </button>
-        <button
-          className={`admin-sidebar-btn${
-            selected === "messages" ? " selected" : ""
-          }`}
-          onClick={() => onSelect("messages")}
-        >
-          <FaEnvelope /> Messages
-        </button>
-        <button
-          className={`admin-sidebar-btn${
             selected === "settings" ? " selected" : ""
           }`}
           onClick={() => onSelect("settings")}
@@ -114,16 +97,11 @@ const stats: Stat[] = [
   { title: "Conversion Rate", value: "3.5%", icon: <FaChartLine size={22} /> },
 ];
 
-type Section =
-  | "dashboard"
-  | "users"
-  | "products"
-  | "orders"
-  | "analytics"
-  | "messages"
-  | "settings";
+type Section = "dashboard" | "users" | "products" | "orders" | "settings";
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<{
+  onUsersClick?: () => void;
+}> = ({ onUsersClick }) => {
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -140,7 +118,7 @@ const Dashboard: React.FC = () => {
       setLoading(true);
       try {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("adminToken");
         // Fetch users count
         const usersRes = await fetch(`${baseUrl}/api/admin/users/count`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -225,10 +203,15 @@ const Dashboard: React.FC = () => {
           <span className="admin-search-icon">🔍</span>
         </div>
       </div>
-      <div className="admin-stats">
+      {/* Add a wrapper for the stats cards to enforce equal height */}
+      <div className="admin-stats admin-stats-equal">
         <Card>
           <CardContent>
-            <div className="admin-card-title">
+            <div
+              className="admin-card-title cursor-pointer hover:underline"
+              onClick={onUsersClick}
+              style={{ cursor: onUsersClick ? "pointer" : undefined }}
+            >
               <FaUsers size={22} />
               <span>Users</span>
             </div>
@@ -282,60 +265,6 @@ const Dashboard: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-      <div className="admin-section-grid">
-        <Card className="admin-analytics">
-          <CardContent>
-            <div className="admin-card-title">Sales Analytics</div>
-            <div className="admin-analytics-chart">[Analytics Chart]</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <div className="admin-card-title">Recent Orders</div>
-            <ul className="admin-card-list">
-              {ordersLoading ? (
-                <li>Loading...</li>
-              ) : recentOrders.length === 0 ? (
-                <li>No recent orders</li>
-              ) : (
-                recentOrders.map((order, idx) => (
-                  <li key={order._id || idx}>
-                    <span>Order #{order._id?.slice(-4) || idx + 1}</span>
-                    <span>
-                      {order.status === "Completed"
-                        ? "✔"
-                        : order.status === "Cancelled"
-                        ? "✖"
-                        : "-"}
-                    </span>
-                  </li>
-                ))
-              )}
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="admin-section-grid" style={{ marginTop: "1.5rem" }}>
-        <Card>
-          <CardContent>
-            <div className="admin-card-title">Messages</div>
-            <ul className="admin-card-list">
-              <li>
-                <span>John Doe</span>
-                <span>...</span>
-              </li>
-              <li>
-                <span>Jane Smith</span>
-                <span>...</span>
-              </li>
-              <li>
-                <span>Emily White</span>
-                <span>...</span>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
     </main>
   );
 };
@@ -354,21 +283,8 @@ const ModernAdminDashboard: React.FC = () => {
     case "orders":
       content = <Orders />;
       break;
-    case "analytics":
-      content = <Analytics />;
-      break;
     case "dashboard":
-      content = <Dashboard />;
-      break;
-    case "messages":
-      content = (
-        <main className="admin-main">
-          <div className="admin-title">Messages</div>
-          <div className="admin-card" style={{ marginTop: "1.5rem" }}>
-            <div className="admin-card-content">[Messages Section]</div>
-          </div>
-        </main>
-      );
+      content = <Dashboard onUsersClick={() => setSelectedSection("users")} />;
       break;
     case "settings":
       content = <Settings />;

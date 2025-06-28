@@ -19,6 +19,30 @@ function adminAuth(req, res, next) {
   }
 }
 
+// In-memory product list for demonstration (replace with DB in production)
+let products = [
+  {
+    tshirt: "Classic Tee",
+    sizes: [
+      { size: "S", price: 499 },
+      { size: "M", price: 549 },
+      { size: "L", price: 599 },
+      { size: "XL", price: 649 },
+    ],
+    modelUrl: "/tshirt3.glb",
+  },
+  {
+    tshirt: "Premium Fit",
+    sizes: [
+      { size: "S", price: 699 },
+      { size: "M", price: 749 },
+      { size: "L", price: 799 },
+      { size: "XL", price: 849 },
+    ],
+    modelUrl: "/tshirt3.glb",
+  },
+];
+
 // GET /api/admin/users/count
 router.get("/users/count", adminAuth, async (req, res) => {
   try {
@@ -34,6 +58,16 @@ router.get("/designs/count", adminAuth, async (req, res) => {
   try {
     const count = await Design.countDocuments();
     res.json({ count });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/admin/designs
+router.get("/designs", adminAuth, async (req, res) => {
+  try {
+    const designs = await Design.find();
+    res.json({ designs });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -1,0 +1,66 @@
+/* Orders Page - Glassmorphic Light Theme */
+.orders-main {
+  flex: 1;
+  background: linear-gradient(135deg, #f5f7fa, #e6e9f5);
+  min-height: 100vh;
+  padding: 2rem;
+  overflow-y: auto;
+}
+.orders-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #23254d;
+  margin-bottom: 1rem;
+}
+.orders-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 1.25rem;
+  padding: 2.5rem 2rem 2rem 2rem;
+  color: #23254d;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  min-height: 200px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.orders-error {
+  color: #f87171;
+  margin-bottom: 0.5rem;
+}
+.orders-table {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px #e6e9f5;
+  margin-top: 1rem;
+  overflow: hidden;
+}
+.orders-table th {
+  padding: 0.75rem 0.5rem;
+  color: #23254d;
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: #f5f7fa;
+}
+.orders-table td {
+  padding: 0.75rem 0.5rem;
+  color: #23254d;
+  font-size: 1rem;
+}
+.orders-table .border-t {
+  border-top: 1px solid #e6e9f5;
+}
+@media (max-width: 700px) {
+  .orders-card {
+    padding: 1rem 0.5rem;
+  }
+  .orders-title {
+    font-size: 1.3rem;
+  }
+  .orders-table th,
+  .orders-table td {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.25rem;
+  }
+}

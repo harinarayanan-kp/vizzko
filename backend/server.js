@@ -19,6 +19,10 @@ const ordersRoutes = require("./routes/orderRoutes"); // Orders management
 const designRoutes = require("./routes/designRoutes"); // Design management
 const userRoutes = require("./routes/userRoutes"); // User profile route
 const adminStatsRoutes = require("./routes/adminStatsRoutes"); // Admin stats
+const adminUserRoutes = require("./routes/adminUserRoutes"); // Admin user management
+const adminOrderRoutes = require("./routes/adminOrderRoutes"); // Admin order management
+const adminSecurityRoutes = require("./routes/adminSecurityRoutes"); // Admin security routes
+const adminProductRoutes = require("./routes/adminProductRoutes"); // Admin product management
 
 // Load environment variables from .env file
 dotenv.config();
@@ -80,6 +84,18 @@ app.use("/api/admin", adminRoutes);
 
 // Admin stats routes (dashboard KPIs)
 app.use("/api/admin", adminStatsRoutes);
+
+// Admin user management routes
+app.use("/api/admin", adminUserRoutes);
+
+// Admin order management routes
+app.use("/api/admin", adminOrderRoutes);
+
+// Admin security routes
+app.use("/api/admin", adminSecurityRoutes);
+
+// Admin product management routes
+app.use("/api/admin", adminProductRoutes);
 
 // User orders route
 app.use("/api/orders", ordersRoutes);

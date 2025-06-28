@@ -246,6 +246,47 @@
   }
 }
 
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #181818;
+  padding: 32px 24px;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 #0002;
+  max-width: 400px;
+  margin: 32px auto 0 auto;
+}
+.checkout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.checkout-field label {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+.checkout-input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #222;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.2s;
+}
+.checkout-input:focus {
+  border: 1.5px solid #4f8cff;
+}
+.cart-success {
+  color: #4caf50;
+  font-size: 18px;
+  text-align: center;
+  margin: 32px 0;
+}
+
 @media (max-width: 700px) {
   .cart-bg {
     padding: 10px;
