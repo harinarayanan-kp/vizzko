@@ -95,13 +95,37 @@ export default function CartPage() {
         <div className="cart-container">
           <div className="cart-title">Your Cart</div>
           {loading ? (
-            <div>Loading...</div>
+            <div className="cart-items-list">
+              {[...Array(2)].map((_, idx) => (
+                <div className="cart-item cart-item-loading" key={idx}>
+                  <div className="cart-item-img cart-item-img-loading" />
+                  <div className="cart-item-info">
+                    <div className="cart-item-desc cart-item-desc-loading" />
+                    <div className="cart-item-size cart-item-size-loading" />
+                    <div className="cart-item-price cart-item-price-loading" />
+                  </div>
+                  <div className="cart-item-qty cart-item-qty-loading" />
+                  <div className="cart-item-remove cart-item-remove-loading" />
+                </div>
+              ))}
+            </div>
           ) : error ? (
             <div className="cart-error">{error}</div>
           ) : (
             <>
               <div className="cart-items-list">
-                {cartItems.length === 0 && <div>Your cart is empty.</div>}
+                {cartItems.length === 0 && (
+                  <div className="cart-empty-state">
+                    <div className="cart-empty-state-title">
+                      Your cart is empty
+                    </div>
+                    <div className="cart-empty-state-desc">
+                      Looks like you haven't added anything yet.
+                      <br />
+                      Start customizing your T-shirt!
+                    </div>
+                  </div>
+                )}
                 {cartItems.map((item, idx) => {
                   const design = designs[item.designId] || {};
                   console.log("CartItem", item, "Design", design);
@@ -114,7 +138,6 @@ export default function CartPage() {
                         onError={(e) => (e.currentTarget.src = "/image.png")}
                       />
                       <div className="cart-item-info">
-                        <div className="cart-item-title">AI Art T-shirt</div>
                         <div className="cart-item-desc">
                           {design.prompt ? (
                             design.prompt
@@ -123,6 +146,12 @@ export default function CartPage() {
                               No prompt available
                             </span>
                           )}
+                        </div>
+                        <div className="cart-item-size">
+                          <span style={{ color: "#fff", fontSize: 13 }}>
+                            Size:
+                          </span>{" "}
+                          <b>{item.size}</b>
                         </div>
                         <div className="cart-item-price">
                           ₹{(SIZE_PRICES[item.size] || 589).toFixed(2)}

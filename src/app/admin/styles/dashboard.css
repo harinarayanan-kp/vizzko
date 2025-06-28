@@ -1,0 +1,201 @@
+/* Glassmorphic Admin Dashboard Styles */
+:root {
+  --glass-bg: rgba(35, 37, 77, 0.75);
+  --glass-bg-alt: rgba(24, 28, 57, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  --glass-blur: blur(16px);
+  --primary-text: #e6e9f5;
+  --secondary-text: #b0b2ca;
+  --sidebar-bg: linear-gradient(to bottom, #202348, #171930);
+  --main-bg: linear-gradient(135deg, #181c39, #242b53);
+}
+
+/* Admin Dashboard Glassmorphic Styles */
+.admin-root {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  background: linear-gradient(135deg, #181c39 0%, #242b53 100%);
+}
+.admin-sidebar {
+  background: var(--sidebar-bg);
+  color: var(--primary-text);
+  width: 16rem;
+  padding: 1.5rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.admin-sidebar-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+}
+.admin-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.admin-sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.admin-sidebar-btn.selected {
+  background: #272b56;
+}
+.admin-sidebar-btn:not(.selected):hover {
+  background: var(--glass-bg);
+}
+.admin-sidebar-footer {
+  font-size: 0.75rem;
+  color: var(--secondary-text);
+}
+.admin-main {
+  flex: 1;
+  background: var(--main-bg);
+  min-height: 100vh;
+  padding: 2rem;
+  overflow-y: auto;
+}
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.admin-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: var(--primary-text);
+}
+.admin-search {
+  position: relative;
+}
+.admin-search-input {
+  background: var(--glass-bg);
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  color: var(--primary-text);
+  outline: none;
+  border: none;
+}
+.admin-search-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.5rem;
+  color: var(--secondary-text);
+}
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+@media (min-width: 768px) {
+  .admin-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.admin-card {
+  background: var(--glass-bg);
+  border: none;
+  color: var(--primary-text);
+  border-radius: 1.5rem;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+.admin-card-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+.admin-card-title {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.admin-card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.admin-card-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+.admin-section {
+  background: #23254d;
+  border-radius: 18px;
+  color: #e6e9f5;
+  box-shadow: 0 4px 18px #0002;
+  padding: 24px 20px;
+  margin-bottom: 24px;
+}
+.admin-section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+.admin-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.admin-list-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #23254d;
+  font-size: 1rem;
+  color: #b0b2ca;
+}
+.admin-list-item:last-child {
+  border-bottom: none;
+}
+.admin-analytics {
+  grid-column: span 2;
+}
+@media (max-width: 767px) {
+  .admin-analytics {
+    grid-column: span 1;
+  }
+}
+.admin-analytics-chart {
+  width: 100%;
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-text);
+  font-size: 1.25rem;
+  font-family: monospace;
+}
+.admin-section-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+@media (min-width: 768px) {
+  .admin-section-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

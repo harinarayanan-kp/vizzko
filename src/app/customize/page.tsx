@@ -17,6 +17,8 @@ export default function PromptLayout() {
   const [apiResult, setApiResult] = useState<any>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [glowPos, setGlowPos] = useState({ x: 0, y: 0 });
+  const [cartAnim, setCartAnim] = useState(false);
+  const [showGoToCart, setShowGoToCart] = useState(false);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
@@ -159,7 +161,8 @@ export default function PromptLayout() {
         const errMsg = await res.text();
         throw new Error(errMsg || "Failed to add to cart");
       }
-      alert(`Added ${quantity} x ${selectedSize} T-shirt(s) to cart!`);
+      setShowGoToCart(true);
+      setTimeout(() => setShowGoToCart(false), 3200);
     } catch (err: any) {
       setError(err.message || "Error adding to cart");
     }
@@ -265,8 +268,19 @@ export default function PromptLayout() {
             </div>
           </div>
           <div className="customize-price">₹{SIZE_PRICES[selectedSize]}</div>
-          <button onClick={handleAddToCart} className="customize-addToCartBtn">
-            Add to Cart
+          <button
+            onClick={handleAddToCart}
+            className="customize-addToCartBtn"
+            disabled={showGoToCart}
+          >
+            {showGoToCart ? (
+              <>
+                <span className="customize-cart-success-icon">✔</span> Added!{" "}
+                <span className="customize-cart-link">Go to Cart</span>
+              </>
+            ) : (
+              "Add to Cart"
+            )}
           </button>
           {error && <div className="customize-error">{error}</div>}
         </div>

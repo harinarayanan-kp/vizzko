@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   FaUsers,
@@ -12,6 +12,7 @@ import {
   FaTachometerAlt,
   FaBoxOpen,
 } from "react-icons/fa";
+import "./styles/dashboard.css";
 
 // Import the new section components
 import Users from "./users";
@@ -20,12 +21,84 @@ import Orders from "./orders";
 import Analytics from "./analytics";
 import Settings from "./settings";
 
-// Dummy Card and CardContent implementation using Tailwind CSS
-const Card: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = "", children }) => (
-  <div className={`rounded-2xl shadow-lg ${className}`}>{children}</div>
+const Sidebar: React.FC<{
+  selected: Section;
+  onSelect: (section: Section) => void;
+}> = ({ selected, onSelect }) => (
+  <aside className="admin-sidebar">
+    <div>
+      <div className="admin-sidebar-title">Admin Dashboard</div>
+      <nav className="admin-sidebar-nav">
+        <button
+          className={`admin-sidebar-btn${
+            selected === "dashboard" ? " selected" : ""
+          }`}
+          onClick={() => onSelect("dashboard")}
+        >
+          <FaTachometerAlt /> Dashboard
+        </button>
+        <button
+          className={`admin-sidebar-btn${
+            selected === "users" ? " selected" : ""
+          }`}
+          onClick={() => onSelect("users")}
+        >
+          <FaUsers /> Users
+        </button>
+        <button
+          className={`admin-sidebar-btn${
+            selected === "products" ? " selected" : ""
+          }`}
+          onClick={() => onSelect("products")}
+        >
+          <FaBoxOpen /> Products
+        </button>
+        <button
+          className={`admin-sidebar-btn${
+            selected === "orders" ? " selected" : ""
+          }`}
+          onClick={() => onSelect("orders")}
+        >
+          <FaShoppingCart /> Orders
+        </button>
+        <button
+          className={`admin-sidebar-btn${
+            selected === "analytics" ? " selected" : ""
+          }`}
+          onClick={() => onSelect("analytics")}
+        >
+          <FaChartLine /> Analytics
+        </button>
+        <button
+          className={`admin-sidebar-btn${
+            selected === "messages" ? " selected" : ""
+          }`}
+          onClick={() => onSelect("messages")}
+        >
+          <FaEnvelope /> Messages
+        </button>
+        <button
+          className={`admin-sidebar-btn${
+            selected === "settings" ? " selected" : ""
+          }`}
+          onClick={() => onSelect("settings")}
+        >
+          <FaCog /> Settings
+        </button>
+      </nav>
+    </div>
+    <div className="admin-sidebar-footer">Admin</div>
+  </aside>
 );
-const CardContent: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = "", children }) => (
-  <div className={`p-4 ${className}`}>{children}</div>
+
+const Card: React.FC<React.PropsWithChildren<{ className?: string }>> = ({
+  className = "",
+  children,
+}) => <div className={`admin-card ${className}`}>{children}</div>;
+const CardContent: React.FC<
+  React.PropsWithChildren<{ className?: string }>
+> = ({ className = "", children }) => (
+  <div className={`admin-card-content ${className}`}>{children}</div>
 );
 
 interface Stat {
@@ -41,134 +114,231 @@ const stats: Stat[] = [
   { title: "Conversion Rate", value: "3.5%", icon: <FaChartLine size={22} /> },
 ];
 
-type Section = "dashboard" | "users" | "products" | "orders" | "analytics" | "messages" | "settings";
+type Section =
+  | "dashboard"
+  | "users"
+  | "products"
+  | "orders"
+  | "analytics"
+  | "messages"
+  | "settings";
 
-const Sidebar: React.FC<{
-  selected: Section;
-  onSelect: (section: Section) => void;
-}> = ({ selected, onSelect }) => (
-  <aside className="bg-gradient-to-b from-[#202348] to-[#171930] text-[#e6e9f5] w-64 p-6 min-h-screen flex flex-col justify-between">
-    <div>
-      <div className="text-2xl font-bold mb-8 tracking-wide">Admin Dashboard</div>
-      <nav className="space-y-2">
-        <button
-          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
-            selected === "dashboard" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
-          }`}
-          onClick={() => onSelect("dashboard")}
-        >
-          <FaTachometerAlt /> Dashboard
-        </button>
-        <button
-          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
-            selected === "users" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
-          }`}
-          onClick={() => onSelect("users")}
-        >
-          <FaUsers /> Users
-        </button>
-        <button
-          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
-            selected === "products" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
-          }`}
-          onClick={() => onSelect("products")}
-        >
-          <FaBoxOpen /> Products
-        </button>
-        <button
-          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
-            selected === "orders" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
-          }`}
-          onClick={() => onSelect("orders")}
-        >
-          <FaShoppingCart /> Orders
-        </button>
-        <button
-          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
-            selected === "analytics" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
-          }`}
-          onClick={() => onSelect("analytics")}
-        >
-          <FaChartLine /> Analytics
-        </button>
-        <button
-          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
-            selected === "messages" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
-          }`}
-          onClick={() => onSelect("messages")}
-        >
-          <FaEnvelope /> Messages
-        </button>
-        <button
-          className={`flex items-center gap-3 p-2 rounded-xl w-full text-left ${
-            selected === "settings" ? "bg-[#272b56]" : "hover:bg-[#23254d]"
-          }`}
-          onClick={() => onSelect("settings")}
-        >
-          <FaCog /> Settings
-        </button>
-      </nav>
-    </div>
-    <div className="text-xs text-[#b0b2ca]">Admin</div>
-  </aside>
-);
+const Dashboard: React.FC = () => {
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [stats, setStats] = useState({
+    users: 0,
+    designs: 0,
+    orders: 0,
+    generatedImages: 0,
+    revenue: 0,
+  });
+  const [loading, setLoading] = useState(true);
 
-const DashboardStats: React.FC = () => (
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-    {stats.map((stat) => (
-      <Card className="bg-[#23254d] border-none text-[#e6e9f5]" key={stat.title}>
-        <CardContent className="flex flex-col gap-2 items-start">
-          <div className="flex items-center gap-2 text-sm">{stat.icon}<span>{stat.title}</span></div>
-          <div className="text-2xl font-bold">{stat.value}</div>
-        </CardContent>
-      </Card>
-    ))}
-  </div>
-);
+  useEffect(() => {
+    const fetchStats = async () => {
+      setLoading(true);
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const token = localStorage.getItem("token");
+        // Fetch users count
+        const usersRes = await fetch(`${baseUrl}/api/admin/users/count`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const users = usersRes.ok ? (await usersRes.json()).count : 0;
+        // Fetch designs count
+        const designsRes = await fetch(`${baseUrl}/api/admin/designs/count`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const designs = designsRes.ok ? (await designsRes.json()).count : 0;
+        // Fetch generated images count
+        const genImgRes = await fetch(
+          `${baseUrl}/api/admin/generatedImages/count`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const generatedImages = genImgRes.ok
+          ? (await genImgRes.json()).count
+          : 0;
+        // Fetch orders count and revenue
+        const ordersRes = await fetch(`${baseUrl}/api/admin/orders/stats`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        let orders = 0,
+          revenue = 0;
+        if (ordersRes.ok) {
+          const data = await ordersRes.json();
+          orders = data.count || 0;
+          revenue = data.revenue || 0;
+        }
+        setStats({ users, designs, orders, generatedImages, revenue });
+      } catch {
+        setStats({
+          users: 0,
+          designs: 0,
+          orders: 0,
+          generatedImages: 0,
+          revenue: 0,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
 
-const Dashboard: React.FC = () => (
-  <main className="flex-1 bg-gradient-to-br from-[#181c39] to-[#242b53] min-h-screen p-8 overflow-y-auto">
-    <div className="flex justify-between items-center mb-8">
-      <div className="text-3xl font-bold text-[#e6e9f5]">Dashboard</div>
-      <div className="relative">
-        <input type="text" className="bg-[#23254d] rounded-full px-4 py-2 text-[#e6e9f5] focus:outline-none" placeholder="Search..." />
-        <span className="absolute right-3 top-2 text-[#b0b2ca]">🔍</span>
+  useEffect(() => {
+    const fetchRecentOrders = async () => {
+      setOrdersLoading(true);
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${baseUrl}/api/admin/orders`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setRecentOrders(data.orders?.slice(-4).reverse() || []);
+        } else {
+          setRecentOrders([]);
+        }
+      } catch {
+        setRecentOrders([]);
+      } finally {
+        setOrdersLoading(false);
+      }
+    };
+    fetchRecentOrders();
+  }, []);
+
+  return (
+    <main className="admin-main">
+      <div className="admin-header">
+        <div className="admin-title">Dashboard</div>
+        <div className="admin-search">
+          <input
+            type="text"
+            className="admin-search-input"
+            placeholder="Search..."
+          />
+          <span className="admin-search-icon">🔍</span>
+        </div>
       </div>
-    </div>
-    <DashboardStats />
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <Card className="bg-[#23254d] border-none text-[#e6e9f5] md:col-span-2">
-        <CardContent>
-          <div className="text-lg font-bold mb-4">Sales Analytics</div>
-          <div className="w-full h-40 flex items-center justify-center text-[#b0b2ca] text-xl font-mono">[Analytics Chart]</div>
-        </CardContent>
-      </Card>
-      <Card className="bg-[#23254d] border-none text-[#e6e9f5]">
-        <CardContent>
-          <div className="text-lg font-bold mb-4">Recent Orders</div>
-          <ul className="space-y-2">
-            <li className="flex justify-between"><span>Order #1234</span><span>↑</span></li>
-            <li className="flex justify-between"><span>Order #1233</span><span>↓</span></li>
-            <li className="flex justify-between"><span>Order #1232</span><span>-</span></li>
-            <li className="flex justify-between"><span>Order #1231</span><span>-</span></li>
-          </ul>
-        </CardContent>
-      </Card>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-      <Card className="bg-[#23254d] border-none text-[#e6e9f5]">
-        <CardContent>
-          <div className="text-lg font-bold mb-4">Messages</div>
-          <ul className="space-y-2">
-            <li className="flex justify-between"><span>John Doe</span><span>...</span></li>
-            <li className="flex justify-between"><span>Jane Smith</span><span>...</span></li>
-            <li className="flex justify-between"><span>Emily White</span><span>...</span></li>
-          </ul>
-        </CardContent>
-      </Card>
-    </div>
-  </main>
-);
+      <div className="admin-stats">
+        <Card>
+          <CardContent>
+            <div className="admin-card-title">
+              <FaUsers size={22} />
+              <span>Users</span>
+            </div>
+            <div className="admin-stat-value">
+              {loading ? "-" : stats.users}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <div className="admin-card-title">
+              <FaChartBar size={22} />
+              <span>Generated Images</span>
+            </div>
+            <div className="admin-stat-value">
+              {loading ? "-" : stats.generatedImages}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <div className="admin-card-title">
+              <FaBoxOpen size={22} />
+              <span>Designs</span>
+            </div>
+            <div className="admin-stat-value">
+              {loading ? "-" : stats.designs}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <div className="admin-card-title">
+              <FaShoppingCart size={22} />
+              <span>Orders</span>
+            </div>
+            <div className="admin-stat-value">
+              {loading ? "-" : stats.orders}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="admin-analytics">
+          <CardContent>
+            <div className="admin-card-title">
+              <FaChartLine size={22} />
+              <span>Total Revenue</span>
+            </div>
+            <div className="admin-stat-value">
+              {loading ? "-" : `₹${stats.revenue.toLocaleString()}`}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="admin-section-grid">
+        <Card className="admin-analytics">
+          <CardContent>
+            <div className="admin-card-title">Sales Analytics</div>
+            <div className="admin-analytics-chart">[Analytics Chart]</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <div className="admin-card-title">Recent Orders</div>
+            <ul className="admin-card-list">
+              {ordersLoading ? (
+                <li>Loading...</li>
+              ) : recentOrders.length === 0 ? (
+                <li>No recent orders</li>
+              ) : (
+                recentOrders.map((order, idx) => (
+                  <li key={order._id || idx}>
+                    <span>Order #{order._id?.slice(-4) || idx + 1}</span>
+                    <span>
+                      {order.status === "Completed"
+                        ? "✔"
+                        : order.status === "Cancelled"
+                        ? "✖"
+                        : "-"}
+                    </span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="admin-section-grid" style={{ marginTop: "1.5rem" }}>
+        <Card>
+          <CardContent>
+            <div className="admin-card-title">Messages</div>
+            <ul className="admin-card-list">
+              <li>
+                <span>John Doe</span>
+                <span>...</span>
+              </li>
+              <li>
+                <span>Jane Smith</span>
+                <span>...</span>
+              </li>
+              <li>
+                <span>Emily White</span>
+                <span>...</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+    </main>
+  );
+};
 
 const ModernAdminDashboard: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<Section>("dashboard");
@@ -192,9 +362,11 @@ const ModernAdminDashboard: React.FC = () => {
       break;
     case "messages":
       content = (
-        <main className="flex-1 bg-gradient-to-br from-[#181c39] to-[#242b53] min-h-screen p-8 overflow-y-auto">
-          <div className="text-2xl font-bold text-[#e6e9f5] mb-4">Messages</div>
-          <div className="bg-[#23254d] rounded-xl p-6 text-[#e6e9f5]">[Messages Section]</div>
+        <main className="admin-main">
+          <div className="admin-title">Messages</div>
+          <div className="admin-card" style={{ marginTop: "1.5rem" }}>
+            <div className="admin-card-content">[Messages Section]</div>
+          </div>
         </main>
       );
       break;
@@ -206,7 +378,7 @@ const ModernAdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="admin-root">
       <Sidebar selected={selectedSection} onSelect={setSelectedSection} />
       {content}
     </div>
