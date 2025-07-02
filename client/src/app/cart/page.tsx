@@ -39,7 +39,7 @@ export default function CartPage() {
           setLoading(false);
           return;
         }
-        const baseUrl = process.env.BASE_URL;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
         const res = await fetch(`${baseUrl}/api/cart`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -88,7 +88,7 @@ export default function CartPage() {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const baseUrl = process.env.BASE_URL;
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
       const res = await fetch(`${baseUrl}/api/cart/remove`, {
         method: "POST",
         headers: {

@@ -2,7 +2,7 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import "./styles/product.css";
 
-const API_BASE = process.env.BASE_URL || "";
+const API_BASE = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 interface Size {
   size: string;

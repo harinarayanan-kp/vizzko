@@ -3,10 +3,10 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import "../styles/navbar.css";
 
-export default function Navbar() {
+function NavbarContent() {
   const [loggedIn, setLoggedIn] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -72,7 +72,11 @@ export default function Navbar() {
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                 </svg>
               </Link>
-              <Link href="/myaccount" className="navbar-icon-btn" title="Profile">
+              <Link
+                href="/myaccount"
+                className="navbar-icon-btn"
+                title="Profile"
+              >
                 <svg
                   className="navbar-icon"
                   width="28"
@@ -96,5 +100,13 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <Suspense fallback={null}>
+      <NavbarContent />
+    </Suspense>
   );
 }
