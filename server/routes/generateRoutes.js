@@ -23,9 +23,23 @@ function auth(req, res, next) {
   }
 }
 
+// Decode base64 Google credentials
+let credentials = undefined;
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64) {
+  try {
+    const credentialsJsonString = Buffer.from(
+      process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64,
+      "base64"
+    ).toString("utf8");
+    credentials = JSON.parse(credentialsJsonString);
+  } catch (e) {
+    console.error("Failed to decode Google credentials:", e);
+  }
+}
+
 // Google Cloud Storage setup
 const storage = new Storage({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  credentials,
 });
 const bucketName = process.env.GCS_BUCKET_NAME;
 const bucket = storage.bucket(bucketName);
@@ -69,7 +83,7 @@ router.post("/", auth, async (req, res) => {
   let accessToken = "";
   try {
     const auth = new GoogleAuth({
-      keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+      credentials,
       scopes: "https://www.googleapis.com/auth/cloud-platform",
     });
     const client = await auth.getClient();
