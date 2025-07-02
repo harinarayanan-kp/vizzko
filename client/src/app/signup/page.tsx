@@ -14,15 +14,16 @@ const Signup = () => {
   const router = useRouter();
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  if (!baseUrl) {
-    throw new Error("BASE_URL is not defined");
-  }
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
+    if (!baseUrl) {
+      setError("BASE_URL is not defined");
+      return;
+    }
     if (!username || !password || !confirm) {
       setError("All fields are required");
       return;
@@ -59,6 +60,10 @@ const Signup = () => {
 
   // Google signup/login handler
   const handleGoogleLogin = () => {
+    if (!baseUrl) {
+      setError("BASE_URL is not defined");
+      return;
+    }
     window.location.href = `${baseUrl}/api/auth/google`;
   };
 

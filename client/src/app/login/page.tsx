@@ -5,9 +5,6 @@ import Navbar from "../components/navbar";
 import Image from "next/image";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-if (!BASE_URL) {
-  throw new Error("BASE_URL is not defined");
-}
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -43,6 +40,9 @@ const Login = () => {
   };
 
   useEffect(() => {
+    if (!BASE_URL) {
+      setError("BASE_URL is not defined");
+    }
     if (typeof window !== "undefined") {
       // Check for token in query params (Google OAuth)
       const params = new URLSearchParams(window.location.search);
