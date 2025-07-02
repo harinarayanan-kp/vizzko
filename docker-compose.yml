@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  backend:
+  server:
     build: ./server
     ports:
       - "5000:5000"
@@ -8,7 +8,7 @@ services:
       - ./server/.env
     volumes:
       - ./server:/app
-  frontend:
+  client:
     build: ./client
     ports:
       - "3000:3000"

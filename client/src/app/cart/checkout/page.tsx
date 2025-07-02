@@ -4,6 +4,15 @@ import { useRouter } from "next/navigation";
 import Navbar from "../../components/navbar";
 import "../../styles/cart.css";
 
+interface CartItem {
+  productId: string;
+  designId: string;
+  size: string;
+  color: string;
+  quantity?: number;
+  price?: number;
+}
+
 export default function CheckoutPage() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -45,12 +54,12 @@ export default function CheckoutPage() {
         XXL: 699,
       };
       const total = cartData.items.reduce(
-        (sum: number, item: any) =>
+        (sum: number, item: CartItem) =>
           sum + (SIZE_PRICES[item.size] || 589) * (item.quantity || 1),
         0
       );
       // Add price to each item
-      const itemsWithPrice = cartData.items.map((item: any) => ({
+      const itemsWithPrice = cartData.items.map((item: CartItem) => ({
         ...item,
         price: SIZE_PRICES[item.size] || 589,
       }));
@@ -76,8 +85,12 @@ export default function CheckoutPage() {
       setTimeout(() => {
         router.push("/myaccount");
       }, 2000);
-    } catch (err: any) {
-      setError(err.message || "Checkout failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Checkout failed");
+      } else {
+        setError("Checkout failed");
+      }
     } finally {
       setLoading(false);
     }

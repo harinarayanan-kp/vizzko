@@ -39,14 +39,6 @@ const AdminPage = () => {
     }
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem("adminToken");
-    setAdminEmail("");
-    setAdminPassword("");
-    setError("");
-  };
-
   if (!isLoggedIn) {
     return (
       <div className="admin-login-bg">

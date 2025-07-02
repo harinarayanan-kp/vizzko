@@ -47,8 +47,12 @@ const Orders = () => {
         }
         const data = await res.json();
         setOrders(data.orders || []);
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch orders");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || "Failed to fetch orders");
+        } else {
+          setError("Failed to fetch orders");
+        }
       } finally {
         setLoading(false);
       }

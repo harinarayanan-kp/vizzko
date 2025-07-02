@@ -1,13 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import {
   FaUsers,
   FaChartBar,
   FaShoppingCart,
   FaChartLine,
-  FaEnvelope,
   FaCog,
   FaTachometerAlt,
   FaBoxOpen,
@@ -85,26 +83,11 @@ const CardContent: React.FC<
   <div className={`admin-card-content ${className}`}>{children}</div>
 );
 
-interface Stat {
-  title: string;
-  value: string;
-  icon: React.ReactNode;
-}
-
-const stats: Stat[] = [
-  { title: "Total Users", value: "1,200", icon: <FaUsers size={22} /> },
-  { title: "Total Revenue", value: "$34,200", icon: <FaChartBar size={22} /> },
-  { title: "Total Orders", value: "850", icon: <FaShoppingCart size={22} /> },
-  { title: "Conversion Rate", value: "3.5%", icon: <FaChartLine size={22} /> },
-];
-
 type Section = "dashboard" | "users" | "products" | "orders" | "settings";
 
 const Dashboard: React.FC<{
   onUsersClick?: () => void;
 }> = ({ onUsersClick }) => {
-  const [recentOrders, setRecentOrders] = useState<any[]>([]);
-  const [ordersLoading, setOrdersLoading] = useState(true);
   const [stats, setStats] = useState({
     users: 0,
     designs: 0,
@@ -165,30 +148,6 @@ const Dashboard: React.FC<{
       }
     };
     fetchStats();
-  }, []);
-
-  useEffect(() => {
-    const fetchRecentOrders = async () => {
-      setOrdersLoading(true);
-      try {
-        const baseUrl = process.env.BASE_URL;
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${baseUrl}/api/admin/orders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setRecentOrders(data.orders?.slice(-4).reverse() || []);
-        } else {
-          setRecentOrders([]);
-        }
-      } catch {
-        setRecentOrders([]);
-      } finally {
-        setOrdersLoading(false);
-      }
-    };
-    fetchRecentOrders();
   }, []);
 
   return (

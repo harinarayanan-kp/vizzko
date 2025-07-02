@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from "react";
 import "../styles/login.css";
 import Navbar from "../components/navbar";
+import Image from "next/image";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 if (!BASE_URL) {
   throw new Error("BASE_URL is not defined");
 }
@@ -124,7 +125,13 @@ const Login = () => {
             onClick={handleGoogleLogin}
             className="login-google-btn"
           >
-            <img src="/Google.png" alt="Google" className="login-google-logo" />
+            <Image
+              src="/Google.png"
+              alt="Google"
+              className="login-google-logo"
+              width={20}
+              height={20}
+            />
             Login with Google
           </button>
           <div className="login-divider"></div>

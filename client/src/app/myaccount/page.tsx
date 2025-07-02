@@ -2,14 +2,34 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import Tshirt3D from "../components/Tshirt3D";
+import Image from "next/image";
 import "../styles/myaccount.css";
 
+interface User {
+  name?: string;
+  email?: string;
+}
+
+interface Order {
+  _id?: string;
+  id?: string;
+  createdAt?: string;
+  status?: string;
+}
+
+interface Design {
+  frontImageUrl: string;
+  backImageUrl?: string;
+  shoulderImageUrl?: string;
+  baseColor?: string;
+}
+
 export default function MyAccountPage() {
-  const [user, setUser] = useState<any | null>(null);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [generatedImages, setGeneratedImages] = useState<any[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [generatedImages, setGeneratedImages] = useState<Design[]>([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [popupDesign, setPopupDesign] = useState<any | null>(null);
+  const [popupDesign, setPopupDesign] = useState<Design | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +52,6 @@ export default function MyAccountPage() {
         if (ordersRes.ok) {
           let ordersData = await ordersRes.json();
           if (!Array.isArray(ordersData)) {
-            // If the response is an object, try to extract an array
             if (ordersData.orders && Array.isArray(ordersData.orders)) {
               ordersData = ordersData.orders;
             } else {
@@ -116,18 +135,23 @@ export default function MyAccountPage() {
                   No generated designs yet.
                 </div>
               )}
-              {generatedImages.map((design: any, i) => (
-                <img
+              {generatedImages.map((design, i) => (
+                <Image
                   className="myaccount-generated-img"
                   src={design.frontImageUrl}
                   alt="Generated"
                   key={i}
+                  width={120}
+                  height={120}
                   onClick={() => {
                     setPopupDesign(design);
                     setShowPopup(true);
                   }}
                   style={{ cursor: "pointer" }}
-                  onError={(e) => (e.currentTarget.style.opacity = "0.3")}
+                  onError={(e) =>
+                    ((e.currentTarget as HTMLImageElement).style.opacity =
+                      "0.3")
+                  }
                 />
               ))}
             </div>

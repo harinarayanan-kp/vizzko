@@ -53,7 +53,7 @@ const Products = () => {
       if (res.ok) setProducts(data.products);
       else setError(data.error || "Failed to fetch products");
     } catch (e) {
-      setError("Failed to fetch products");
+      setError("Failed to fetch products: " + (e as Error).message);
     } finally {
       setLoading(false);
     }

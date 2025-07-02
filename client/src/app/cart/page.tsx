@@ -1,13 +1,29 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
+import Image from "next/image";
 import "../styles/cart.css";
 
+interface CartItem {
+  _id?: string;
+  productId: string;
+  designId: string;
+  size: string;
+  color: string;
+  quantity?: number;
+}
+
+interface Design {
+  designId: string;
+  frontImageUrl?: string;
+  prompt?: string;
+}
+
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [designs, setDesigns] = useState<Record<string, any>>({});
+  const [designs, setDesigns] = useState<Record<string, Design>>({});
   const [productPrices, setProductPrices] = useState<Record<string, number>>(
     {}
   );
@@ -36,8 +52,8 @@ export default function CartPage() {
         });
         if (dres.ok) {
           const ddata = await dres.json();
-          const dmap: Record<string, any> = {};
-          ddata.forEach((d: any) => {
+          const dmap: Record<string, Design> = {};
+          ddata.forEach((d: Design) => {
             dmap[d.designId as string] = d;
           });
           setDesigns(dmap);
@@ -54,8 +70,12 @@ export default function CartPage() {
           }
         }
         setProductPrices(priceMap);
-      } catch (err: any) {
-        setError(err.message || "Error loading cart");
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message || "Error loading cart");
+        } else {
+          setError("Error loading cart");
+        }
       } finally {
         setLoading(false);
       }
@@ -64,7 +84,7 @@ export default function CartPage() {
   }, []);
 
   // Remove item from cart
-  const handleRemove = async (item: any) => {
+  const handleRemove = async (item: CartItem) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -88,7 +108,7 @@ export default function CartPage() {
     } catch {}
   };
 
-  const getItemPrice = (item: any) => {
+  const getItemPrice = (item: CartItem) => {
     return productPrices[`${item.productId}_${item.size}`] || 0;
   };
 
@@ -129,7 +149,7 @@ export default function CartPage() {
                       Your cart is empty
                     </div>
                     <div className="cart-empty-state-desc">
-                      Looks like you haven't added anything yet.
+                      Looks like you haven&apos;t added anything yet.
                       <br />
                       Start customizing your T-shirt!
                     </div>
@@ -137,14 +157,19 @@ export default function CartPage() {
                 )}
                 {cartItems.map((item, idx) => {
                   const design = designs[item.designId] || {};
-                  console.log("CartItem", item, "Design", design);
+                  // console.log("CartItem", item, "Design", design);
                   return (
                     <div className="cart-item" key={item._id || idx}>
-                      <img
+                      <Image
                         className="cart-item-img"
                         src={design.frontImageUrl || "/image.png"}
                         alt={design.prompt || "T-shirt"}
-                        onError={(e) => (e.currentTarget.src = "/image.png")}
+                        width={80}
+                        height={80}
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src =
+                            "/image.png";
+                        }}
                       />
                       <div className="cart-item-info">
                         <div className="cart-item-desc">

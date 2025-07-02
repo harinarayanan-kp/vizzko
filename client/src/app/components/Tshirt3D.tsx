@@ -30,69 +30,101 @@ const GLBModel: React.FC<Props> = ({
   leftImage,
   rightImage,
 }) => {
-  const meshRef = useRef<any>(null);
-  const { scene } = useGLTF("/tshirt3.glb") as any;
+  const meshRef = useRef<THREE.Group | THREE.Mesh>(null);
+  const { scene } = useGLTF("/tshirt3.glb") as { scene: THREE.Group };
 
-  // Load textures only if images are provided
-  const loadTexture = (url?: string) => {
-    if (!url) return null;
-    const tex = useLoader(THREE.TextureLoader, url);
-    if (tex) tex.flipY = false; // Fix flipped images for GLB UVs
-    return tex;
-  };
-  const backfullTexture = loadTexture(backfullImage);
-  const backupperTexture = loadTexture(backupperImage);
-  const frontfullTexture = loadTexture(frontfullImage);
-  const leftTexture = loadTexture(leftImage);
-  const rightTexture = loadTexture(rightImage);
+  // Always call useLoader in the same order, use a placeholder if not provided
+  const PLACEHOLDER = "/front_sample.png"; // Make sure this exists in public/
+  const backfullTexture = useLoader(
+    THREE.TextureLoader,
+    backfullImage || PLACEHOLDER
+  );
+  const backupperTexture = useLoader(
+    THREE.TextureLoader,
+    backupperImage || PLACEHOLDER
+  );
+  const frontfullTexture = useLoader(
+    THREE.TextureLoader,
+    frontfullImage || PLACEHOLDER
+  );
+  const leftTexture = useLoader(THREE.TextureLoader, leftImage || PLACEHOLDER);
+  const rightTexture = useLoader(
+    THREE.TextureLoader,
+    rightImage || PLACEHOLDER
+  );
+
+  // FlipY fix only if the prop is provided
+  if (backfullImage && backfullTexture) backfullTexture.flipY = false;
+  if (backupperImage && backupperTexture) backupperTexture.flipY = false;
+  if (frontfullImage && frontfullTexture) frontfullTexture.flipY = false;
+  if (leftImage && leftTexture) leftTexture.flipY = false;
+  if (rightImage && rightTexture) rightTexture.flipY = false;
 
   useEffect(() => {
     if (!scene) return;
-    // Find the main mesh group (if needed, or just use scene)
-    scene.traverse((child: any) => {
-      if (child.isMesh && child.material) {
-        switch (child.name) {
+    scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh && (child as THREE.Mesh).material) {
+        const mesh = child as THREE.Mesh;
+        switch (mesh.name) {
           case "base":
-            child.material.color = new THREE.Color(baseColor);
-            child.material.map = null;
-            child.material.transparent = false;
-            child.material.opacity = 1;
-            child.material.needsUpdate = true;
+            (mesh.material as THREE.MeshStandardMaterial).color =
+              new THREE.Color(baseColor);
+            (mesh.material as THREE.MeshStandardMaterial).map = null;
+            (mesh.material as THREE.MeshStandardMaterial).transparent = false;
+            (mesh.material as THREE.MeshStandardMaterial).opacity = 1;
+            (mesh.material as THREE.MeshStandardMaterial).needsUpdate = true;
             break;
           case "backfull":
-            child.material.map = backfullTexture;
-            child.material.transparent = true;
-            child.material.alphaTest = 0.01;
-            child.material.opacity = backfullTexture ? 1 : 0;
-            child.material.needsUpdate = true;
+            (mesh.material as THREE.MeshStandardMaterial).map = backfullImage
+              ? backfullTexture
+              : null;
+            (mesh.material as THREE.MeshStandardMaterial).transparent = true;
+            (mesh.material as THREE.MeshStandardMaterial).alphaTest = 0.01;
+            (mesh.material as THREE.MeshStandardMaterial).opacity =
+              backfullImage ? 1 : 0;
+            (mesh.material as THREE.MeshStandardMaterial).needsUpdate = true;
             break;
           case "backupper":
-            child.material.map = backupperTexture;
-            child.material.transparent = true;
-            child.material.alphaTest = 0.01;
-            child.material.opacity = backupperTexture ? 1 : 0;
-            child.material.needsUpdate = true;
+            (mesh.material as THREE.MeshStandardMaterial).map = backupperImage
+              ? backupperTexture
+              : null;
+            (mesh.material as THREE.MeshStandardMaterial).transparent = true;
+            (mesh.material as THREE.MeshStandardMaterial).alphaTest = 0.01;
+            (mesh.material as THREE.MeshStandardMaterial).opacity =
+              backupperImage ? 1 : 0;
+            (mesh.material as THREE.MeshStandardMaterial).needsUpdate = true;
             break;
           case "frontfull":
-            child.material.map = frontfullTexture;
-            child.material.transparent = true;
-            child.material.alphaTest = 0.01;
-            child.material.opacity = frontfullTexture ? 1 : 0;
-            child.material.needsUpdate = true;
+            (mesh.material as THREE.MeshStandardMaterial).map = frontfullImage
+              ? frontfullTexture
+              : null;
+            (mesh.material as THREE.MeshStandardMaterial).transparent = true;
+            (mesh.material as THREE.MeshStandardMaterial).alphaTest = 0.01;
+            (mesh.material as THREE.MeshStandardMaterial).opacity =
+              frontfullImage ? 1 : 0;
+            (mesh.material as THREE.MeshStandardMaterial).needsUpdate = true;
             break;
           case "left":
-            child.material.map = leftTexture;
-            child.material.transparent = true;
-            child.material.alphaTest = 0.01;
-            child.material.opacity = leftTexture ? 1 : 0;
-            child.material.needsUpdate = true;
+            (mesh.material as THREE.MeshStandardMaterial).map = leftImage
+              ? leftTexture
+              : null;
+            (mesh.material as THREE.MeshStandardMaterial).transparent = true;
+            (mesh.material as THREE.MeshStandardMaterial).alphaTest = 0.01;
+            (mesh.material as THREE.MeshStandardMaterial).opacity = leftImage
+              ? 1
+              : 0;
+            (mesh.material as THREE.MeshStandardMaterial).needsUpdate = true;
             break;
           case "right":
-            child.material.map = rightTexture;
-            child.material.transparent = true;
-            child.material.alphaTest = 0.01;
-            child.material.opacity = rightTexture ? 1 : 0;
-            child.material.needsUpdate = true;
+            (mesh.material as THREE.MeshStandardMaterial).map = rightImage
+              ? rightTexture
+              : null;
+            (mesh.material as THREE.MeshStandardMaterial).transparent = true;
+            (mesh.material as THREE.MeshStandardMaterial).alphaTest = 0.01;
+            (mesh.material as THREE.MeshStandardMaterial).opacity = rightImage
+              ? 1
+              : 0;
+            (mesh.material as THREE.MeshStandardMaterial).needsUpdate = true;
             break;
           default:
             break;
@@ -102,6 +134,11 @@ const GLBModel: React.FC<Props> = ({
   }, [
     scene,
     baseColor,
+    backfullImage,
+    backupperImage,
+    frontfullImage,
+    leftImage,
+    rightImage,
     backfullTexture,
     backupperTexture,
     frontfullTexture,
@@ -153,5 +190,4 @@ const Tshirt3D: React.FC<Props> = (props) => {
 export default Tshirt3D;
 
 // Preload the model for better performance
-// @ts-ignore
-useGLTF.preload && useGLTF.preload("/tshirt3.glb");
+if (useGLTF.preload) useGLTF.preload("/tshirt3.glb");

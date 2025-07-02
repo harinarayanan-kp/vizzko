@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navbar";
+import Image from "next/image";
 import "../styles/signup.css";
 
 const Signup = () => {
@@ -51,7 +52,7 @@ const Signup = () => {
         }
         router.push("/"); // Navigate to home page on success
       }
-    } catch (err: any) {
+    } catch {
       setError("Signup failed");
     }
   };
@@ -119,7 +120,13 @@ const Signup = () => {
             onClick={handleGoogleLogin}
             className="signup-google-btn"
           >
-            <img src="/Google.png" alt="Google" className="signup-google-img" />
+            <Image
+              src="/Google.png"
+              alt="Google"
+              width={24}
+              height={24}
+              className="signup-google-img"
+            />
             Signup with Google
           </button>
           <div className="signup-divider"></div>

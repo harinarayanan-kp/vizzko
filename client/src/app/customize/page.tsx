@@ -3,9 +3,21 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Tshirt3D from "../components/Tshirt3D";
-import Navbar from "../components/navbar";
 import "../styles/customise.css";
-import BASE_URL from "../../../config";
+
+interface ApiResult {
+  color?: string;
+  frontImageUrl?: string;
+  backImageUrl?: string;
+  shoulderImageUrl?: string;
+  designId?: string;
+  // add more fields as needed
+}
+
+interface ProductSize {
+  size: string;
+  price: number;
+}
 
 export default function PromptLayout() {
   const [prompt, setPrompt] = useState("");
@@ -13,18 +25,14 @@ export default function PromptLayout() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [apiResult, setApiResult] = useState<any>(null);
+  const [apiResult, setApiResult] = useState<ApiResult | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [glowPos, setGlowPos] = useState({ x: 0, y: 0 });
-  const [cartAnim, setCartAnim] = useState(false);
   const [showGoToCart, setShowGoToCart] = useState(false);
-  const [productSizes, setProductSizes] = useState<
-    { size: string; price: number }[]
-  >([]);
+  const [productSizes, setProductSizes] = useState<ProductSize[]>([]);
   const [productId, setProductId] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
 
-  const baseUrl = process.env.BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
 
@@ -42,23 +50,6 @@ export default function PromptLayout() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
-
-  // Animate glowPos toward mousePos for smooth trailing
-  useEffect(() => {
-    let frame: number;
-    const animate = () => {
-      setGlowPos((prev) => {
-        const lerp = 0.18; // Lower = slower, Higher = snappier
-        return {
-          x: prev.x + (mousePos.x - prev.x) * lerp,
-          y: prev.y + (mousePos.y - prev.y) * lerp,
-        };
-      });
-      frame = requestAnimationFrame(animate);
-    };
-    animate();
-    return () => cancelAnimationFrame(frame);
-  }, [mousePos]);
 
   // On mount, load last apiResult from localStorage if available
   useEffect(() => {
@@ -80,8 +71,7 @@ export default function PromptLayout() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const baseUrl = BASE_URL;
-        // const baseUrl = process.env.BASE_URL;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
         // Get product details by name directly
         const prodRes = await fetch(`${baseUrl}/api/products/tshirt`);
         if (!prodRes.ok) throw new Error("Product details not found");
@@ -89,14 +79,16 @@ export default function PromptLayout() {
         setProductId(prod._id);
         setProductSizes(prod.sizes || []);
         // Set default price for selected size
-        const found = prod.sizes.find((s: any) => s.size === selectedSize);
+        const found = prod.sizes.find(
+          (s: ProductSize) => s.size === selectedSize
+        );
         setPrice(found ? found.price : 0);
-      } catch (err) {
+      } catch {
         setError("Could not load product info");
       }
     };
     fetchProduct();
-  }, []);
+  }, [selectedSize]);
 
   useEffect(() => {
     // Update price when size changes
@@ -119,12 +111,14 @@ export default function PromptLayout() {
         body: JSON.stringify({ prompt, sampleCount: 1 }),
       });
       if (!res.ok) throw new Error("Failed to generate image");
-      const data = await res.json();
+      const data: ApiResult = await res.json();
       setApiResult(data);
       // Save design to DB
       if (token && data?.frontImageUrl) {
+        const frontImageUrl = data.frontImageUrl || "";
         const designId =
-          data.frontImageUrl.split("/").pop().split(".")[0] + Date.now();
+          (frontImageUrl.split("/").pop()?.split(".")[0] || "design") +
+          Date.now();
         await fetch(`${baseUrl}/api/designs/add`, {
           method: "POST",
           headers: {
@@ -140,11 +134,10 @@ export default function PromptLayout() {
             prompt,
           }),
         });
-        // Attach designId to apiResult for cart
-        setApiResult((prev: any) => ({ ...prev, designId }));
+        setApiResult((prev) => ({ ...prev!, designId }));
       }
-    } catch (err: any) {
-      setError(err.message || "Error generating image");
+    } catch {
+      setError("Error generating image");
     } finally {
       setLoading(false);
     }
@@ -184,8 +177,8 @@ export default function PromptLayout() {
       }
       setShowGoToCart(true);
       setTimeout(() => setShowGoToCart(false), 3200);
-    } catch (err: any) {
-      setError(err.message || "Error adding to cart");
+    } catch {
+      setError("Error adding to cart");
     }
   };
 
