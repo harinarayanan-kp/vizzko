@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Tshirt3D from "./components/Tshirt3D";
+import BASE_URL from "../../config";
 
 const Test: React.FC = () => {
   const [prompt, setPrompt] = useState("");
@@ -39,7 +40,7 @@ const Test: React.FC = () => {
     setUserEmail(null);
   };
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = BASE_URL;
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -117,7 +118,7 @@ const Test: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <Tshirt3D image={images[0] || ""} />
+        {/* <Tshirt3D image={images[0] || ""} /> */}
 
         {images.length > 0 && (
           <div

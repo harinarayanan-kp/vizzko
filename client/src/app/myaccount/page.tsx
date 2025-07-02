@@ -16,7 +16,7 @@ export default function MyAccountPage() {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const baseUrl = process.env.BASE_URL;
         // Fetch user info
         const userRes = await fetch(`${baseUrl}/api/user`, {
           headers: { Authorization: `Bearer ${token}` },

@@ -31,8 +31,16 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
-// Enable CORS for all routes (allows frontend to access backend)
-app.use(cors());
+// --- CORS Configuration ---
+// This is where you add the CORS middleware
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000", // Allow requests from your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Specify allowed HTTP methods
+    credentials: true, // Allow sending cookies/authorization headers
+  })
+);
+// --- End CORS Configuration ---
 
 // Parse incoming JSON requests
 app.use(express.json());
@@ -60,8 +68,8 @@ mongoose
 // Health Check Endpoint
 // =======================
 
-app.get("/", (req, res) => {
-  res.send("Server is running successfully");
+app.get("/api", (req, res) => {
+  res.json({ message: "API is working!" });
 });
 
 // =======================
@@ -114,7 +122,13 @@ app.use("/api/products", productRoutes);
 // Start the Server
 // =======================
 
+module.exports = app;
+
+// If you still want to run it locally with app.listen() for development,
+// you can do it like this, but Vercel won't use this part.
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}

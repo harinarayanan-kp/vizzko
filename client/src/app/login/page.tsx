@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import "../styles/login.css";
 import Navbar from "../components/navbar";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.BASE_URL;
 if (!BASE_URL) {
-  throw new Error("NEXT_PUBLIC_BASE_URL is not defined");
+  throw new Error("BASE_URL is not defined");
 }
 
 const Login = () => {

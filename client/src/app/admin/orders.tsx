@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import "./styles/orders.css";
+import BASE_URL from "../../../config";
 
 interface OrderItem {
   productId?: string;
@@ -36,16 +37,11 @@ const Orders = () => {
       setError("");
       try {
         const token = localStorage.getItem("adminToken");
-        const res = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
-          }/api/admin/orders`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await fetch(`${BASE_URL}/api/admin/orders`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!res.ok) {
           throw new Error(await res.text());
         }

@@ -5,6 +5,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Tshirt3D from "../components/Tshirt3D";
 import Navbar from "../components/navbar";
 import "../styles/customise.css";
+import BASE_URL from "../../../config";
 
 export default function PromptLayout() {
   const [prompt, setPrompt] = useState("");
@@ -23,7 +24,7 @@ export default function PromptLayout() {
   const [productId, setProductId] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = process.env.BASE_URL;
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +80,8 @@ export default function PromptLayout() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const baseUrl = BASE_URL;
+        // const baseUrl = process.env.BASE_URL;
         // Get product details by name directly
         const prodRes = await fetch(`${baseUrl}/api/products/tshirt`);
         if (!prodRes.ok) throw new Error("Product details not found");

@@ -12,9 +12,9 @@ const Signup = () => {
   const [success, setSuccess] = useState("");
   const router = useRouter();
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = process.env.BASE_URL;
   if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_BASE_URL is not defined");
+    throw new Error("BASE_URL is not defined");
   }
 
   const handleSignup = async (e: React.FormEvent) => {

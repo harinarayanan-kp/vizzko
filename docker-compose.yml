@@ -1,20 +1,20 @@
 version: '3.8'
 services:
   backend:
-    build: ./backend
+    build: ./server
     ports:
       - "5000:5000"
     env_file:
-      - ./backend/.env
+      - ./server/.env
     volumes:
-      - ./backend:/app
+      - ./server:/app
   frontend:
-    build: ./frontend
+    build: ./client
     ports:
       - "3000:3000"
     env_file:
-      - ./frontend/.env
+      - ./client/.env
     volumes:
-      - ./frontend:/app
+      - ./client:/app
     depends_on:
-      - backend
+      - server

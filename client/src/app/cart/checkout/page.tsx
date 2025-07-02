@@ -25,7 +25,7 @@ export default function CheckoutPage() {
         return;
       }
       // Fetch cart items
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      const baseUrl = process.env.BASE_URL;
       const cartRes = await fetch(`${baseUrl}/api/cart`, {
         headers: { Authorization: `Bearer ${token}` },
       });

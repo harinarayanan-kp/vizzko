@@ -19,6 +19,7 @@ import Users from "./users";
 import Products from "./products";
 import Orders from "./orders";
 import Settings from "./settings";
+import BASE_URL from "../../../config";
 
 const Sidebar: React.FC<{
   selected: Section;
@@ -117,7 +118,7 @@ const Dashboard: React.FC<{
     const fetchStats = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const baseUrl = BASE_URL;
         const token = localStorage.getItem("adminToken");
         // Fetch users count
         const usersRes = await fetch(`${baseUrl}/api/admin/users/count`, {
@@ -170,7 +171,7 @@ const Dashboard: React.FC<{
     const fetchRecentOrders = async () => {
       setOrdersLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const baseUrl = process.env.BASE_URL;
         const token = localStorage.getItem("token");
         const res = await fetch(`${baseUrl}/api/admin/orders`, {
           headers: { Authorization: `Bearer ${token}` },

@@ -53,7 +53,7 @@ JWT_SECRET=your_jwt_secret
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_APPLICATION_CREDENTIALS=path_to_your_google_service_account.json
-NEXT_PUBLIC_BASE_URL=http://localhost:5000
+BASE_URL=http://localhost:5000
 ```
 
 > **Note:** Never commit your `.env` or service account JSON to version control.
@@ -79,7 +79,7 @@ npm run allrun all
 4. **Customize** or regenerate as needed.**Customize** or regenerate as needed.
 5. **Place your order** and track it in your account.5. **Place your order** and track it in your account.
 
-------
+---
 
 ## Learn More
 
@@ -94,7 +94,7 @@ npm run allrun all
 
 This project is for personal and educational use.
 
-------
+---
 
 ## Acknowledgements## Acknowledgements
 

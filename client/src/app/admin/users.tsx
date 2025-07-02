@@ -30,7 +30,7 @@ const Users = () => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const baseUrl = process.env.BASE_URL;
         const token = localStorage.getItem("adminToken");
         const params = new URLSearchParams({
           limit: limit.toString(),
@@ -73,7 +73,7 @@ const Users = () => {
     if (!editUser) return;
     setEditLoading(true);
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      const baseUrl = process.env.BASE_URL;
       const token = localStorage.getItem("adminToken");
       const res = await fetch(`${baseUrl}/api/admin/users/${editUser._id}`, {
         method: "PATCH",
@@ -91,7 +91,7 @@ const Users = () => {
         const fetchUsers = async () => {
           setLoading(true);
           try {
-            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+            const baseUrl = process.env.BASE_URL;
             const token = localStorage.getItem("adminToken");
             const params = new URLSearchParams({
               limit: limit.toString(),
@@ -130,7 +130,7 @@ const Users = () => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     setDeleteLoading(userId);
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      const baseUrl = process.env.BASE_URL;
       const token = localStorage.getItem("adminToken");
       const res = await fetch(`${baseUrl}/api/admin/users/${userId}`, {
         method: "DELETE",

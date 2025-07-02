@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from "react";
 import ModernAdminDashboard from "./dashboard";
 import "./styles/login.css";
+import BASE_URL from "../../../config";
 
 // Use NEXT_PUBLIC_API_BASE_URL from environment or fallback to localhost
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+// const API_BASE_URL =
+//   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 const AdminPage = () => {
   const [adminEmail, setAdminEmail] = useState("");
@@ -24,7 +25,7 @@ const AdminPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
+    const res = await fetch(`${BASE_URL}/api/admin/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: adminEmail, password: adminPassword }),
