@@ -58,7 +58,7 @@ export default function PromptLayout() {
     if (saved) {
       try {
         setApiResult(JSON.parse(saved));
-      } catch {}
+      } catch { }
     }
   }, []);
 
@@ -187,7 +187,6 @@ export default function PromptLayout() {
     <div className="customize-root">
       <Navbar />
       <div className="customize-bg" ref={bgRef}>
-        {/* 3D Model Section */}
         <div
           className="customize-modelSection"
           style={{ position: "relative", overflow: "hidden" }}
@@ -212,7 +211,6 @@ export default function PromptLayout() {
             }}
           />
         </div>
-        {/* Controls Section */}
         <div className="customize-controlsSection">
           <div className="customize-heading">Customize your T-shirt</div>
           <div className="customize-promptRow">
@@ -255,9 +253,8 @@ export default function PromptLayout() {
                 <button
                   key={s.size}
                   onClick={() => setSelectedSize(s.size)}
-                  className={`customize-sizeBtn${
-                    selectedSize === s.size ? " selected" : ""
-                  }`}
+                  className={`customize-sizeBtn${selectedSize === s.size ? " selected" : ""
+                    }`}
                 >
                   {s.size}
                 </button>
@@ -300,6 +297,9 @@ export default function PromptLayout() {
           </button>
           {error && <div className="customize-error">{error}</div>}
         </div>
+      </div>
+      <div className="">
+        COMING SOON
       </div>
     </div>
   );

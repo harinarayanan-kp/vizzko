@@ -15,12 +15,11 @@
 .customize-bg {
   background: var(--color-bg-gradient);
   width: 100%;
-  height: 100vh;
   padding: 30px;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
   gap: 30px;
   position: relative;
   z-index: 1;
@@ -45,7 +44,6 @@
 
 .customize-controlsSection {
   width: 100%;
-  align-self: stretch;
   padding: 20px;
   background: var(--color-glass-bg);
   border-radius: 30px;
