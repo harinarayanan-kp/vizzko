@@ -9,9 +9,9 @@ export default function HomePage() {
                 Vizzko
             </Link>
             <div className="home-nav-links">
-                <div className="home-nav-link">
-                    Dashboard
-                </div>
+                <Link href="/customize">
+                 Customize
+                </Link>
                 <div className="home-nav-link">
                     Login
                 </div>

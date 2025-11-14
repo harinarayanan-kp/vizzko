@@ -4,6 +4,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Tshirt3D from "../components/Tshirt3D";
 import "../styles/customise.css";
+import Navbar from "../components/navbar";
 
 interface ApiResult {
   color?: string;
@@ -184,6 +185,7 @@ export default function PromptLayout() {
 
   return (
     <div className="customize-root">
+      <Navbar />
       <div className="customize-bg" ref={bgRef}>
         {/* 3D Model Section */}
         <div
