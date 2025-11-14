@@ -1,0 +1,38 @@
+.home-main {
+    width: 100%;
+    background-color: aliceblue;
+}
+
+.home-title3{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 10rem;
+    color: #001b3a;
+}
+
+.home-nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    width: 100%;
+    background-color: aqua;
+    gap: 30px;
+}
+
+.home-nav-links{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.home-image-container1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}

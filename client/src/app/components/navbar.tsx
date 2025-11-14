@@ -40,7 +40,7 @@ function NavbarContent() {
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <Link href="/" className="navbar-logo">
+        <Link href="/home" className="navbar-logo">
           Vizzko
         </Link>
         <div className="navbar-btns">
