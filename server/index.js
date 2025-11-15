@@ -6,7 +6,7 @@
 const express = require("express"); // Web framework for Node.js
 const cors = require("cors"); // Middleware for enabling CORS
 const dotenv = require("dotenv"); // Loads environment variables from .env
-const mongoose = require("mongoose"); // MongoDB object modeling tool
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const passport = require("passport"); // Authentication middleware
 
 // Import route handlers
@@ -52,17 +52,25 @@ app.use(passport.initialize());
 // MongoDB Connection
 // =======================
 
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB", err);
-  });
+const uri = process.env.MONGO_URI;
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+async function run() {
+  try {
+    await client.connect();
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    await client.close();
+  }
+}
+run().catch(console.dir);
 
 // =======================
 // Health Check Endpoint
@@ -76,47 +84,46 @@ app.get("/api", (req, res) => {
 // API Routes
 // =======================
 
-// AI image generation (Google Vertex AI)
-app.use("/api/generate", generateRoutes);
+// // AI image generation (Google Vertex AI)
+// app.use("/api/generate", generateRoutes);
 
-// User authentication (signup, login, etc.)
 app.use("/api/auth", authRoutes);
 
-// Google OAuth authentication
-app.use("/api/auth", googleAuthRoutes);
+// // Google OAuth authentication
+// app.use("/api/auth", googleAuthRoutes);
 
-// Cart management (add, get cart items)
-app.use("/api/cart", cartRoutes);
+// // Cart management (add, get cart items)
+// app.use("/api/cart", cartRoutes);
 
-// Admin routes
-app.use("/api/admin", adminRoutes);
+// // Admin routes
+// app.use("/api/admin", adminRoutes);
 
-// Admin stats routes (dashboard KPIs)
-app.use("/api/admin", adminStatsRoutes);
+// // Admin stats routes (dashboard KPIs)
+// app.use("/api/admin", adminStatsRoutes);
 
-// Admin user management routes
-app.use("/api/admin", adminUserRoutes);
+// // Admin user management routes
+// app.use("/api/admin", adminUserRoutes);
 
-// Admin order management routes
-app.use("/api/admin", adminOrderRoutes);
+// // Admin order management routes
+// app.use("/api/admin", adminOrderRoutes);
 
-// Admin security routes
-app.use("/api/admin", adminSecurityRoutes);
+// // Admin security routes
+// app.use("/api/admin", adminSecurityRoutes);
 
-// Admin product management routes
-app.use("/api/admin", adminProductRoutes);
+// // Admin product management routes
+// app.use("/api/admin", adminProductRoutes);
 
-// User orders route
-app.use("/api/orders", ordersRoutes);
+// // User orders route
+// app.use("/api/orders", ordersRoutes);
 
-// Design management
-app.use("/api/designs", designRoutes);
+// // Design management
+// app.use("/api/designs", designRoutes);
 
-// User profile route
-app.use("/api/user", userRoutes);
+// // User profile route
+// app.use("/api/user", userRoutes);
 
-// Product management routes
-app.use("/api/products", productRoutes);
+// // Product management routes
+// app.use("/api/products", productRoutes);
 
 // =======================
 // Start the Server
