@@ -65,6 +65,7 @@ const Login = () => {
     <div className="login-root">
       <Navbar />
       <div className="login-bg">
+        {/* <Navbar /> */}
         <div className="login-card">
           <div className="login-title">Welcome Back!</div>
           <form className="login-form" onSubmit={handleLogin}>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navbar";
 import Image from "next/image";
-import "../styles/signup.css";
+import "../styles/login.css";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -86,60 +86,57 @@ const Signup = () => {
   }, []);
 
   return (
-    <div className="signup-root">
+    <div className="login-root">
       <Navbar />
-      <div className="signup-bg">
-        <div className="signup-container">
-          <div className="signup-title">Create Account</div>
-          <form className="signup-form" onSubmit={handleSignup}>
+      <div className="login-bg">
+        <div className="login-card">
+          <div className="login-title">Create Account</div>
+          <form className="login-form" onSubmit={handleSignup}>
             <input
               type="email"
               placeholder="Email address"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="signup-input"
+              className="login-input"
             />
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="signup-input"
+              className="login-input"
             />
             <input
               type="password"
               placeholder="Confirm Password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              className="signup-input"
+              className="login-input"
             />
-            <button type="submit" className="signup-btn">
-              Signup
+            <button type="submit" className="login-btn">
+              Create account
             </button>
-            {error && <div className="signup-error">{error}</div>}
-            {success && <div className="signup-success">{success}</div>}
+            {error && <div className="login-error">{error}</div>}
           </form>
-          <div className="signup-or">OR</div>
+          <div className="login-or-text">OR</div>
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="signup-google-btn"
+            className="login-google-btn"
           >
             <Image
               src="/Google.png"
               alt="Google"
               width={24}
               height={24}
-              className="signup-google-img"
+              className="login-google-logo"
             />
             Signup with Google
           </button>
-          <div className="signup-divider"></div>
-          <div className="signup-footer">
-            <span className="signup-footer-text">
-              Already have an account?{" "}
-            </span>
-            <a href="/login" className="signup-footer-link">
+          <div className="login-divider"></div>
+          <div className="login-bottom-row">
+            <span className="login-bottom-text">Already have an account? </span>
+            <a href="/login" className="login-bottom-link">
               Login
             </a>
           </div>
