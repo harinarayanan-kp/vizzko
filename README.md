@@ -1,4 +1,5 @@
 # Vizzko
+> ⚠️ **Under maintenance** — this project is currently undergoing maintenance. Some features or services may be temporarily unavailable. 
 
 Vizzko is a full-stack web application for generating and ordering custom t-shirt designs using AI. Built with **Next.js**, **Express**, and **MongoDB**, Vizzko leverages **Google Vertex AI** to turn your creative ideas into unique wearables.
 
@@ -12,6 +13,12 @@ Vizzko is a full-stack web application for generating and ordering custom t-shir
 - 🎨 **Customization:** Adjust prompts and regenerate designs as needed.
 - 🛒 **Order Management:** Place and track t-shirt orders.
 - 🔒 **Secure:** JWT-based authentication and secure backend.
+
+## Preview
+
+Watch a short preview of Vizzko in action:
+
+[Preview video on YouTube](https://youtu.be/Qdh6Dlj48g8?si=ibwnusOwDKl8vPiF)
 
 ---
 
